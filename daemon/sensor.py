@@ -1,0 +1,62 @@
+#!/usr/bin/env python3
+##
+# Nicolas THIBAUT
+# nicolas.thibaut@uppersafe.com
+##
+# -*- coding: utf-8 -*-
+
+from utils import configuration, database, logger
+import sys, re, time, os
+
+conf = configuration()
+db = database(conf.get("db"))
+log = logger(__name__, conf.get("debug"))
+
+class sensor:
+    def __init__(self):
+        self.ino = 0
+        self.idx = 0
+        self.start()
+
+    def parse(self, buffer):
+        for source, destination, port in re.findall(".* SRC=([0-9a-f:.]+) DST=([0-9a-f:.]+) .* DPT=([0-9]+) .*", buffer, re.IGNORECASE):
+            log.info(str("Blocking '{}' -> '{}:{}'").format(source, destination, port))
+            db.session.add(db.models.events(source=source, destination=destination, port=port))
+        try:
+            db.session.commit()
+        except Exception as error:
+            db.session.rollback()
+            log.error(error)
+        return 0
+
+    def watch(self, file):
+        self.idx = 0
+        if not self.ino:
+            self.idx = os.stat(file).st_size
+        self.ino = os.stat(file).st_ino
+        log.info(str("[!] Subscribing to file '{}'").format(file))
+        with open(file) as fd:
+            fd.seek(self.idx)
+            try:
+                while self.ino == os.stat(file).st_ino:
+                    for element in [x for x in fd.read().split("\n") if x.strip()]:
+                        self.parse(element)
+                    time.sleep(1)
+            except:
+                pass
+        log.warning(str("[!] Unsubscribing from file '{}' (probably because of log rotation)").format(file))
+        return 0
+
+    def start(self):
+        while self.idx >= 0:
+            try:
+                conf.reload()
+            except Exception as error:
+                log.critical(error)
+                return 1
+            if os.path.exists(conf.get("monitor")):
+                self.watch(conf.get("monitor"))
+            else:
+                log.error(str("[!] Could not find '{}' to monitor network events").format(conf.get("monitor")))
+            time.sleep(1)
+        return 0

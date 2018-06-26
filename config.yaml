@@ -1,0 +1,171 @@
+---
+db: assets/sqlite.db
+debug: yes
+threads: 32
+flaskHost: 127.0.0.1
+flaskPort: 8000
+userAgent: UPPERSAFE (Open Source Firewall Project) https://github.com/dev2lead/uppersafe-osfw
+queryTimeout: 10
+refreshDelay: 3600
+filterMode: classic
+groupRange: yes
+monitor: /var/log/messages
+network:
+  eth: eth+
+  ppp: ppp+
+  tun: tun+
+unbound:
+  verbosity: 1
+  hide-version: yes
+  interface: 0.0.0.0
+  access-control: 10.0.0.0/8 allow
+feeds:
+  - alienvault
+  - blocklist
+  - ciarmy
+  - greensnow
+  - openphish
+  - phishtank
+  - ransomware
+  - spamhaus
+# - uppersafe
+exemptions:
+# - 217.78.11.148
+  - 127.0.0.1
+  - .163.tld
+  - .360.tld
+  - .abuse.co
+  - adf.ly
+  - .adjust.tld
+  - .akamai.tld
+  - .akamaiedge.tld
+  - .akamaihd.tld
+  - .alibaba.tld
+  - .alienvault.tld
+  - .aliexpress.tld
+  - .amazon.tld
+  - amzn.to
+  - .aol.tld
+  - .aolcdn.tld
+  - .aryaka.tld
+  - .baidu.tld
+  - .bing.tld
+  - bit.ly
+  - .bitly.tld
+  - .bitbucket.tld
+  - .blocklist.tld
+  - .box.tld
+  - buff.ly
+  - .buffer.tld
+  - .cinsscore.tld
+  - .cloudflare.tld
+  - .discord.tld
+  - .discordapp.tld
+  - .doubleclick.tld
+  - .dropbox.tld
+  - .duckduckgo.tld
+  - .dyn.tld
+  - .dyndns.tld
+  - .emailretargeting.tld
+  - .facebook.tld
+  - .fb.tld
+  - .fbcdn.tld
+  - .free.tld
+  - .freecdn.tld
+  - g.co
+  - .gandi.tld
+  - .ggpht.tld
+  - .github.tld
+  - .githubusercontent.tld
+  - .gitlab.tld
+  - .gmail.tld
+  - goo.gl
+  - .google.tld
+  - .googleadservices.tld
+  - .googleadwords.tld
+  - .googleapis.tld
+  - .googleapps.tld
+  - .googlecache.tld
+  - .googlecode.tld
+  - .googledocs.tld
+  - .googledrive.tld
+  - .googlegroups.tld
+  - .googleimages.tld
+  - .googlemail.tld
+  - .googleplus.tld
+  - .googleproxy.tld
+  - .googlesearch.tld
+  - .googlesyndication.tld
+  - .googletranslate.tld
+  - .googleusercontent.tld
+  - .greensnow.tld
+  - .gstatic.tld
+  - .gsuite.tld
+  - .hotmail.tld
+  - .href.tld
+  - .icloud.tld
+  - .iconfinder.tld
+  - .imageshack.tld
+  - .imgur.tld
+  - .instagram.tld
+  - .line.tld
+  - .linkedin.tld
+  - .live.tld
+  - .lnkd.tld
+  - .mailchimp.tld
+  - .mailgun.tld
+  - .mailjet.tld
+  - .mandrill.tld
+  - .mandrillapp.tld
+  - .maxcdn.tld
+  - .messenger.tld
+  - .microsoft.tld
+  - .microsoftonline.tld
+  - .microsoftstore.tld
+  - .msdn.tld
+  - .msft.tld
+  - .msftncsi.tld
+  - .naver.tld
+  - .netflix.tld
+  - .office.tld
+  - .office365.tld
+  - .openphish.tld
+  - .outlook.tld
+  - .ovh.tld
+  - ow.ly
+  - .parastorage.tld
+  - .phishtank.tld
+  - .pinterest.tld
+  - .postimage.tld
+  - .postimg.tld
+  - .prestashop.tld
+  - .qq.tld
+  - .quora.tld
+  - .reddit.tld
+  - .shopify.tld
+  - .similarcdn.tld
+  - .similarweb.tld
+  - .sina.tld
+  - .sohu.tld
+  - .spamhaus.tld
+  - t.co
+  - .telegram.tld
+  - .tiny.tld
+  - .tinyurl.tld
+  - .tumblr.tld
+  - .twimg.tld
+  - .twitch.tld
+  - .twitter.tld
+  - .uppersafe.tld
+  - .vk.tld
+  - .weibo.tld
+  - .whatsapp.tld
+  - .wix.tld
+  - .yahoo.tld
+  - .ymail.tld
+  - .youku.tld
+  - youtu.be
+  - .youtube.tld
+  - .ytimg.tld
+  - .yy.tld
+  - .wetransfer.tld
