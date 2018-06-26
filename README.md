@@ -1,4 +1,4 @@
-## *UPPERSAFE Open Source Firewall*
+# *UPPERSAFE Open Source Firewall*
 
 OSFW is a firewall, fully written in Python 3, that provides an IP / domain filtering based on a collection of public threat intelligence feeds.
 
