@@ -1,16 +1,20 @@
 ## *UPPERSAFE Open Source Firewall*
 
 OSFW is a firewall, fully written in Python 3, that provides an IP / domain filtering based on a collection of public threat intelligence feeds.
-It blocks in real time *incoming* / *outcoming* traffic considered as *malicious* (matching the filtering rules automatically set up for each threat).
-It also provides a secure DNS service that blocks different kind of cyber threats (phishing websites, malware hosting, C&C servers, etc).
+
+It blocks in real time incoming and outcoming traffic considered as *malicious* (matching the filtering rules automatically set up for each threat).
+
+It also provides a secure DNS service that blocks different kind of malicious servers (phishing websites, malware hosting, C&C servers, etc).
 
 ## Components
 
 OSFW includes 3 main components:
 
-- **osfw-sensor** (in charge of monitoring and logging the requests blocked by the firewall)
-- **osfw-syncfw** (in charge of collecting and syncing the threat intelligence feeds)
-- **osfw-webapp** (in charge of offering a management dashboard)
+|Name|Description|
+|-|-|
+|**osfw-sensor**|In charge of monitoring and logging the requests blocked by the firewall|
+|**osfw-syncfw**|In charge of collecting and syncing the threat intelligence feeds|
+|**osfw-webapp**|In charge of offering the management dashboard|
 
 ## Quick start
 
