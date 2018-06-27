@@ -9,7 +9,7 @@ import logging, colorlog
 
 banner = '''
 ####
-## UPPERSAFE-OSFW (Open Source Firewall Project)
+## UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall)
 ## Version: 0.0.1
 ## License: GNU AGPLv3
 ## Author: Nicolas THIBAUT (nicolas[@]uppersafe[.]com)
