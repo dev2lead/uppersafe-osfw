@@ -63,22 +63,17 @@ There is also a way to make a rule act as a subdomain wildcard, to do so you nee
 
 ## Dependencies
 
-- python3
+- python3 (see also `requirements.txt`)
 - iptables
 - unbound
 - screen
-
-## Python requirements
-
-- pyyaml
-- colorlog
-- requests
-- flask
-- sqlalchemy
-- pebble
 
 ## Support
 
 Nicolas THIBAUT (nicolas[@]uppersafe[.]com)
 
 https://www.patreon.com/dev2lead/memberships
+
+## License
+
+This software is provided under a GNU AGPLv3 License.
