@@ -4,7 +4,7 @@ debug: yes
 threads: 32
 flaskHost: 127.0.0.1
 flaskPort: 8000
-userAgent: UPPERSAFE Open Source Firewall https://github.com/dev2lead/uppersafe-osfw
+userAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.com/dev2lead/uppersafe-osfw
 queryTimeout: 10
 refreshDelay: 3600
 filterMode: classic
