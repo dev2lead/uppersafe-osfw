@@ -18,7 +18,7 @@ OSFW includes 3 main components:
 
 ## Quick start
 
-Setup the virtual environment:
+Install the virtual environment:
 
     python3 -m venv venv
     source venv/bin/activate
