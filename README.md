@@ -1,3 +1,5 @@
+![UPPERSAFE](https://web.uppersafe.com/resources/images/uppersafe-color.svg)
+
 # *UPPERSAFE Open Source Firewall*
 
 OSFW is a firewall, fully written in Python 3, that provides an IP / domain filtering based on a collection of threat intelligence public feeds.
@@ -38,9 +40,9 @@ Attach a screen:
 
 To enable the secure DNS service, simply create a symbolic link of the `unbound.conf` file to the unbound configuration directory with the following command:
 
-    ln -s "$PWD/assets/unbound.conf" /etc/unbound/unbound.conf.d/firewall.conf
+    ln -s "$PWD/assets/unbound.conf" /etc/unbound/unbound.conf.d/osfw.conf
 
-It is possible to customize the behaviour of the firewall by editing the default `config.yaml` file.
+It is possible to customize the behaviour of the firewall by editing the default `config.yml` file.
 
 One of the reasons you would want to edit this file is to unblock specific websites.
 It happens that some legit and top ranked websites got blocked because of different purposes, most of the time one of the following:
@@ -50,14 +52,24 @@ It happens that some legit and top ranked websites got blocked because of differ
 - Their users can perform URL redirect (link shortener websites)
 
 To prevent these websites from being blocked, you can specify them as a list in the configuration file.
-In case you want to edit the default list, you can use a magic keyword `.tld` that will match any top level domain and the following second level domain names:
 
-- .co.tld
-- .com.tld
-- .net.tld
-- .org.tld
-- .edu.tld
-- .gov.tld
+In case you want to edit the default list, you can use a magic keyword `.tld` that will match any top level domain and some specific second level domain names.
+For example, `domain.tld` will match all of the following cases:
+
+- `domain.uk`
+- `domain.co.uk`
+- `domain.com.uk`
+- `domain.net.uk`
+- `domain.org.uk`
+- `domain.edu.uk`
+- `domain.gov.uk`
+- `domain.jp`
+- `domain.co.jp`
+- `domain.com.jp`
+- `domain.net.jp`
+- `domain.org.jp`
+- `domain.edu.jp`
+- `domain.gov.jp`
 
 There is also a way to make a rule act as a subdomain wildcard, to do so you need to start the rule with a `.` such as the ones in the default configuration file.
 

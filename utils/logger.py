@@ -40,7 +40,7 @@ class logger:
             manager.setLevel(logging.DEBUG)
         else:
             manager.setLevel(logging.INFO)
-        for line in banner.format(verbose).splitlines():
+        for line in [x for x in banner.format(verbose).splitlines() if x.strip()]:
             manager.info(line)
         self.debug = manager.debug
         self.info = manager.info

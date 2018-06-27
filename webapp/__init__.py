@@ -15,4 +15,4 @@ app.debug = conf.get("debug")
 app.session_cookie_name = "session"
 app.secret_key = hashlib.md5(os.urandom(24)).hexdigest()
 
-import routes
+from . import routes

@@ -9,7 +9,7 @@ import sys, yaml
 
 class configuration(dict):
     def __init__(self):
-        self.file = "config.yaml"
+        self.file = "config.yml"
         try:
             self.reload()
         except Exception as error:

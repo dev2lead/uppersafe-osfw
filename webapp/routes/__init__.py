@@ -4,3 +4,5 @@
 # nicolas.thibaut@uppersafe.com
 ##
 # -*- coding: utf-8 -*-
+
+from .default import *
