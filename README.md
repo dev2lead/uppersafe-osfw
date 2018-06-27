@@ -4,7 +4,7 @@ OSFW is a firewall, fully written in Python 3, that provides an IP / domain filt
 
 It blocks in real time incoming and outcoming traffic considered as *malicious* (matching the filtering rules automatically set up for each threat).
 
-It also provides a secure DNS service that blocks different kind of malicious servers (phishing websites, malware hosting, C&C servers, etc).
+It also provides a secure DNS service that blocks different kind of *malicious servers* (phishing websites, malware hosting, malvertising, C&C servers, etc).
 
 ## Components
 
@@ -12,35 +12,35 @@ OSFW includes 3 main components:
 
 |Name|Description|
 |-|-|
-|**osfw-sensor**|In charge of monitoring and logging the requests blocked by the firewall|
-|**osfw-syncfw**|In charge of collecting and syncing the threat intelligence feeds|
-|**osfw-webapp**|In charge of offering the management dashboard|
+|`osfw-sensor`|In charge of monitoring and logging the requests blocked by the firewall|
+|`osfw-syncfw`|In charge of collecting and syncing the threat intelligence feeds|
+|`osfw-webapp`|In charge of managing the web interface|
 
 ## Quick start
 
 Setup the virtual environment:
 
-    python3 -m venv venv
-    source venv/bin/activate
-    pip install -r requirements.txt
+`python3 -m venv venv`
+`source venv/bin/activate`
+`pip install -r requirements.txt`
 
 Start the firewall components:
 
-    bash run.sh
+`bash run.sh`
 
 Attach a screen:
 
-    screen -r osfw-sensor
-    screen -r osfw-syncfw
-    screen -r osfw-webapp
+`screen -r osfw-sensor`
+`screen -r osfw-syncfw`
+`screen -r osfw-webapp`
 
 ## Configuration
 
-To enable the secure DNS service, simply create a symbolic link of the *firewall.conf* file to the unbound configuration directory with the following command:
+To enable the secure DNS service, simply create a symbolic link of the `unbound.conf` file to the unbound configuration directory with the following command:
 
-    ln -s "$PWD/assets/unbound.conf" /etc/unbound/unbound.conf.d/firewall.conf
+`ln -s "$PWD/assets/unbound.conf" /etc/unbound/unbound.conf.d/firewall.conf`
 
-It is possible to customize the behaviour of the firewall by editing the default *config.yaml* file.
+It is possible to customize the behaviour of the firewall by editing the default `config.yaml` file.
 
 One of the reasons you would want to edit this file is to unblock specific websites.
 It happens that some legit and top ranked websites got blocked because of different purposes, most of the time one of the following:
@@ -50,7 +50,7 @@ It happens that some legit and top ranked websites got blocked because of differ
 - Their users can perform URL redirect (link shortener websites)
 
 To prevent these websites from being blocked, you can specify them as a list in the configuration file.
-In case you want to edit the default list, you can use a magic keyword ".tld" that will match any top level domain and the following second level domain names:
+In case you want to edit the default list, you can use a magic keyword `.tld` that will match any top level domain and the following second level domain names:
 
 - .co.tld
 - .com.tld
@@ -59,7 +59,7 @@ In case you want to edit the default list, you can use a magic keyword ".tld" th
 - .edu.tld
 - .gov.tld
 
-There is also a way to make a rule act as a subdomain wildcard, to do so you need to start the rule with a "." such as the ones already in the configuration file.
+There is also a way to make a rule act as a subdomain wildcard, to do so you need to start the rule with a `.` such as the ones already in the configuration file.
 
 ## Dependencies
 

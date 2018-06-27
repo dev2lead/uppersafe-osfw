@@ -24,7 +24,7 @@ class unbound:
     def append(self, content):
         with open(self.file, "r+") as fd:
             buffer = []
-            for element in [x for x in fd.read().split("\n") if x.strip()]:
+            for element in [x for x in fd.read().splitlines() if x.strip()]:
                 if element != self.record.format(content):
                     buffer.append(element)
         with open(self.file, "w+") as fd:
@@ -34,7 +34,7 @@ class unbound:
     def delete(self, content):
         with open(self.file, "r+") as fd:
             buffer = []
-            for element in [x for x in fd.read().split("\n") if x.strip()]:
+            for element in [x for x in fd.read().splitlines() if x.strip()]:
                 if element != self.record.format(content):
                     buffer.append(element)
         with open(self.file, "w+") as fd:

@@ -24,7 +24,7 @@ class spamhaus:
             try:
                 response = self.session.get(element, timeout=self.timeout)
                 if response.status_code == 200:
-                    data = data + [x for x in response.text.split("\n") if x.strip()]
+                    data = data + [x for x in response.text.splitlines() if x.strip()]
                     self.threats.clear()
             except:
                 self.log.error(str("Request error in '{}' = {}").format(self.__class__.__name__, element))

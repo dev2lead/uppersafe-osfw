@@ -15,9 +15,9 @@ export LC_ALL="C.UTF-8"
 export LANG="C.UTF-8"
 
 if [ -z "$1" ]; then
-    screen -h 1000000 -dmS osfw-sensor bash run.sh daemon/sensor
-    screen -h 1000000 -dmS osfw-syncfw bash run.sh daemon/syncfw
-    screen -h 1000000 -dmS osfw-webapp bash run.sh webapp
+    screen -dmS osfw-sensor bash run.sh daemon/sensor
+    screen -dmS osfw-syncfw bash run.sh daemon/syncfw
+    screen -dmS osfw-webapp bash run.sh webapp
 fi
 
 if [ "$1" == "daemon/sensor" ]; then

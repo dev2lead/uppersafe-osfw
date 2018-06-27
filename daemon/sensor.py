@@ -39,7 +39,7 @@ class sensor:
             fd.seek(self.idx)
             try:
                 while self.ino == os.stat(file).st_ino:
-                    for element in [x for x in fd.read().split("\n") if x.strip()]:
+                    for element in [x for x in fd.read().splitlines() if x.strip()]:
                         self.parse(element)
                     time.sleep(1)
             except:
