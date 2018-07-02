@@ -21,15 +21,16 @@ class configuration(dict):
             self.data = yaml.load(fd)
         self.verify({
             "db": str(),
-            "debug": bool(),
+            "host": str(),
+            "port": int(),
+            "mode": str(),
+            "verbose": bool(),
             "threads": int(),
-            "flaskHost": str(),
-            "flaskPort": int(),
-            "userAgent": str(),
-            "queryTimeout": int(),
             "refreshDelay": int(),
-            "filterMode": str(),
+            "queryTimeout": int(),
+            "queryUserAgent": str(),
             "groupRange": bool(),
+            "filterMode": str(),
             "monitor": str(),
             "network": {
                 "eth": str(),

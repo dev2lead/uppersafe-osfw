@@ -20,6 +20,3 @@ class database:
         self.session = sessionmaker()
         self.session.configure(bind=self.engine)
         self.session = self.session()
-
-    def __del__(self):
-        self.session.commit()

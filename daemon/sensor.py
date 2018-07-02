@@ -10,7 +10,7 @@ import sys, re, time, os
 
 conf = configuration()
 db = database(conf.get("db"))
-log = logger(__name__, conf.get("debug"))
+log = logger(__name__, conf.get("verbose"))
 
 class sensor:
     def __init__(self):

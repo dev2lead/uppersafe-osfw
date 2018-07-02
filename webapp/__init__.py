@@ -11,7 +11,7 @@ import flask, hashlib, os
 conf = configuration()
 db = database(conf.get("db"))
 app = flask.Flask(__name__)
-app.debug = conf.get("debug")
+app.debug = conf.get("verbose")
 app.session_cookie_name = "session"
 app.secret_key = hashlib.md5(os.urandom(24)).hexdigest()
 

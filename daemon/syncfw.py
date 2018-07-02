@@ -10,7 +10,7 @@ import sys, re, time, imp, json, socket, pebble
 
 conf = configuration()
 db = database(conf.get("db"))
-log = logger(__name__, conf.get("debug"))
+log = logger(__name__, conf.get("verbose"))
 ipfw = iptables(conf.get("network"), conf.get("filterMode"))
 dnfw = unbound(conf.get("unbound"))
 
@@ -66,7 +66,7 @@ class syncfw:
             if element not in self.feeds.keys():
                 file = str("feeds/{}.py").format(element)
                 module = getattr(imp.load_source(element, file), element)
-                self.feeds.update({element: module(log, conf.get("groupRange"), conf.get("userAgent"), conf.get("queryTimeout"))})
+                self.feeds.update({element: module(log, conf.get("groupRange"), conf.get("queryUserAgent"), conf.get("queryTimeout"))})
         for element in sorted(self.feeds.keys()):
             if element not in conf.get("feeds"):
                 self.feeds.pop(element)
@@ -117,6 +117,12 @@ class syncfw:
                         log.warning(str("Ignoring '{}' -> '{}'").format(element, str().join(reversed(regex))))
                         self.threats.pop(element)
         log.info(str("[!] CLEAN part 1/1 done ({} threats)").format(len(self.threats)))
+        return 0
+
+    def build(self):
+        with open("assets/threats.txt", "w+") as fd:
+            fd.write(str("\n").join(sorted(self.threats.keys())) + "\n")
+        log.info(str("[!] BUILD part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
     def merge(self):
@@ -192,18 +198,25 @@ class syncfw:
         log.info(str("[!] RESET part 2/2 done ({} threats)").format(len(self.threats)))
         return 0
 
-    def refresh(self):
-        log.info(str("[!] Starting FETCH..."))
-        self.fetch()
-        log.info(str("[!] Starting CLEAN..."))
-        self.clean()
-        log.info(str("[!] Starting MERGE..."))
-        self.merge()
+    def refresh(self, timestamp):
+        if timestamp == 0 and conf.get("mode") in ["server", "standalone", "client"]:
+            log.info(str("[!] Starting RESET..."))
+            self.reset()
+        if timestamp >= 0 and conf.get("mode") in ["server", "standalone", "client"]:
+            log.info(str("[!] Starting FETCH..."))
+            self.fetch()
+        if timestamp >= 0 and conf.get("mode") in ["server", "standalone"]:
+            log.info(str("[!] Starting CLEAN..."))
+            self.clean()
+        if timestamp >= 0 and conf.get("mode") in ["server"]:
+            log.info(str("[!] Starting BUILD..."))
+            self.build()
+        if timestamp >= 0 and conf.get("mode") in ["server", "standalone", "client"]:
+            log.info(str("[!] Starting MERGE..."))
+            self.merge()
         return 0
 
     def start(self):
-        log.info(str("[!] Starting RESET..."))
-        self.reset()
         timestamp = 0
         while timestamp >= 0:
             try:
@@ -212,8 +225,8 @@ class syncfw:
                 log.critical(error)
                 return 1
             if int(time.time()) - timestamp >= conf.get("refreshDelay"):
+                self.refresh(timestamp)
                 timestamp = int(time.time())
-                self.refresh()
             else:
                 time.sleep(60)
         return 0

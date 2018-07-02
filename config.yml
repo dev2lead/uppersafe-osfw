@@ -1,14 +1,15 @@
 ---
 db: assets/sqlite.db
-debug: yes
+host: 127.0.0.1
+port: 8000
+mode: standalone
+verbose: yes
 threads: 32
-flaskHost: 127.0.0.1
-flaskPort: 8000
-userAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.com/dev2lead/uppersafe-osfw
-queryTimeout: 10
 refreshDelay: 3600
-filterMode: classic
+queryTimeout: 10
+queryUserAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.com/dev2lead/uppersafe-osfw
 groupRange: yes
+filterMode: classic
 monitor: /var/log/messages
 network:
   eth: eth+

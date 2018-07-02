@@ -16,7 +16,7 @@ def main():
         daemon.syncfw()
     if len(sys.argv) == 2 and "webapp" in sys.argv:
         webapp = imp.load_source("webapp", "webapp/__init__.py")
-        webapp.app.run(webapp.conf.get("flaskHost"), webapp.conf.get("flaskPort"))
+        webapp.app.run(webapp.conf.get("host"), webapp.conf.get("port"))
     return 0
 
 if __name__ == "__main__":
