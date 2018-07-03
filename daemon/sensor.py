@@ -5,12 +5,8 @@
 ##
 # -*- coding: utf-8 -*-
 
-from utils import configuration, database, logger
-import sys, re, time, os
-
-conf = configuration()
-db = database(conf.get("db"))
-log = logger(__name__, conf.get("verbose"))
+from daemon import conf, log, db
+import time, os, re
 
 class sensor:
     def __init__(self):

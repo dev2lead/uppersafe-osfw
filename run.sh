@@ -32,4 +32,8 @@ if [ "$1" == "webapp" ]; then
     python main.py webapp | tee assets/logs.txt
 fi
 
+if [ "$1" == "assert" ]; then
+    python main.py assert
+fi
+
 popd > /dev/null 2>&1

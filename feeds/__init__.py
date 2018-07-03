@@ -5,11 +5,11 @@
 ##
 # -*- coding: utf-8 -*-
 
-from alienvault import .alienvault
-from blocklist import .blocklist
-from ciarmy import .ciarmy
-from greensnow import .greensnow
-from openphish import .openphish
-from phishtank import .phishtank
-from ransomware import .ransomware
-from spamhaus import .spamhaus
+from .alienvault import alienvault
+from .blocklist import blocklist
+from .ciarmy import ciarmy
+from .greensnow import greensnow
+from .openphish import openphish
+from .phishtank import phishtank
+from .ransomware import ransomware
+from .spamhaus import spamhaus

@@ -5,14 +5,8 @@
 ##
 # -*- coding: utf-8 -*-
 
-from utils import configuration, database, logger, iptables, unbound
-import sys, re, time, imp, json, socket, pebble
-
-conf = configuration()
-db = database(conf.get("db"))
-log = logger(__name__, conf.get("verbose"))
-ipfw = iptables(conf.get("network"), conf.get("filterMode"))
-dnfw = unbound(conf.get("unbound"))
+from daemon import conf, log, db, ipfw, dnfw
+import time, importlib, re, json, socket, pebble
 
 def ipbydn(data):
     result = set()
@@ -64,8 +58,7 @@ class syncfw:
     def fetch(self):
         for element in conf.get("feeds"):
             if element not in self.feeds.keys():
-                file = str("feeds/{}.py").format(element)
-                module = getattr(imp.load_source(element, file), element)
+                module = getattr(importlib.import_module(str("feeds.{}").format(element)), element)
                 self.feeds.update({element: module(log, conf.get("groupRange"), conf.get("queryUserAgent"), conf.get("queryTimeout"))})
         for element in sorted(self.feeds.keys()):
             if element not in conf.get("feeds"):
@@ -92,6 +85,19 @@ class syncfw:
         return 0
 
     def clean(self):
+        for element in conf.get("exemptions"):
+            if re.search("[.][a-z]+$", element):
+                db.session.add(db.models.exemptions(domain=element.lower()))
+            else:
+                db.session.add(db.models.exemptions(ipaddr=element.lower()))
+        try:
+            db.models.exemptions().metadata.drop_all(db.engine)
+            db.models.exemptions().metadata.create_all(db.engine)
+            db.session.commit()
+        except Exception as error:
+            db.session.rollback()
+            log.error(error)
+        log.info(str("[!] CLEAN part 1/2 done ({} threats)").format(len(self.threats)))
         for row in db.session.query(db.models.exemptions).order_by(db.models.exemptions.id).all():
             regex = []
             if row.domain:
@@ -116,7 +122,7 @@ class syncfw:
                     if re.search(str("^{}$").format(str().join(reversed(regex))), element):
                         log.warning(str("Ignoring '{}' -> '{}'").format(element, str().join(reversed(regex))))
                         self.threats.pop(element)
-        log.info(str("[!] CLEAN part 1/1 done ({} threats)").format(len(self.threats)))
+        log.info(str("[!] CLEAN part 2/2 done ({} threats)").format(len(self.threats)))
         return 0
 
     def build(self):
@@ -182,12 +188,6 @@ class syncfw:
             if row.ipaddr:
                 if row.ipaddr not in self.threats:
                     self.check_append(row.ipaddr, ipfw.ipbl, ipfw.drop)
-        log.info(str("[!] RESET part 1/2 done ({} threats)").format(len(self.threats)))
-        for element in conf.get("exemptions"):
-            if re.search("[.][a-z]+$", element):
-                db.session.add(db.models.exemptions(domain=element.lower()))
-            else:
-                db.session.add(db.models.exemptions(ipaddr=element.lower()))
         try:
             ipfw.commit()
             dnfw.commit()
@@ -195,7 +195,7 @@ class syncfw:
         except Exception as error:
             db.session.rollback()
             log.error(error)
-        log.info(str("[!] RESET part 2/2 done ({} threats)").format(len(self.threats)))
+        log.info(str("[!] RESET part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
     def refresh(self, timestamp):

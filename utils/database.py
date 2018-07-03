@@ -5,14 +5,14 @@
 ##
 # -*- coding: utf-8 -*-
 
-import imp
+import importlib
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 class database:
     def __init__(self, file, verbose=False):
         self.engine = create_engine(str("sqlite:///{}").format(file), echo=verbose)
-        self.models = imp.load_source("models", "models/__init__.py")
+        self.models = importlib.import_module("models")
         self.models.exemptions().metadata.create_all(self.engine)
         self.models.threats().metadata.create_all(self.engine)
         self.models.events().metadata.create_all(self.engine)
