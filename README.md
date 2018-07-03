@@ -2,6 +2,8 @@
 
 # *UPPERSAFE Open Source Firewall*
 
+[![Build status](https://travis-ci.org/dev2lead/uppersafe-osfw.svg?branch=master)](https://travis-ci.org/dev2lead/uppersafe-osfw) [![Python 3.4|3.5|3.6](https://img.shields.io/badge/python-3.4|3.5|3.6-yellow.svg)](https://www.python.org)
+
 OSFW is a firewall, fully written in Python 3, that provides an IP / domain filtering based on a collection of threat intelligence public feeds.
 
 It blocks in real time incoming and outcoming traffic considered as *malicious* (matching the filtering rules automatically set up for each threat).
