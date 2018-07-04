@@ -65,7 +65,10 @@ class syncfw:
                 self.feeds.pop(element)
         for element in self.feeds.values():
             self.threats.update([(x, []) for x in element.refresh()])
-        log.info(str("[!] FETCH part 1/2 done ({} threats)").format(len(self.threats)))
+        log.info(str("[!] FETCH part 1/1 done ({} threats)").format(len(self.threats)))
+        return 0
+
+    def build(self):
         with pebble.ProcessPool(conf.get("threads")) as pool:
             instance = pool.map(resolv, sorted(self.threats.keys()), timeout=conf.get("queryTimeout"))
             iterator = instance.result()
@@ -81,7 +84,7 @@ class syncfw:
                 log.warning("Process pool is not empty (iterator object is still iterable)")
             except StopIteration:
                 pass
-        log.info(str("[!] FETCH part 2/2 done ({} threats)").format(len(self.threats)))
+        log.info(str("[!] BUILD part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
     def clean(self):
@@ -125,10 +128,10 @@ class syncfw:
         log.info(str("[!] CLEAN part 2/2 done ({} threats)").format(len(self.threats)))
         return 0
 
-    def build(self):
+    def write(self):
         with open("assets/threats.txt", "w+") as fd:
             fd.write(str("\n").join(sorted(self.threats.keys())) + "\n")
-        log.info(str("[!] BUILD part 1/1 done ({} threats)").format(len(self.threats)))
+        log.info(str("[!] WRITE part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
     def merge(self):
@@ -206,11 +209,14 @@ class syncfw:
             log.info(str("[!] Starting FETCH..."))
             self.fetch()
         if timestamp >= 0 and conf.get("mode") in ["server", "standalone"]:
+            log.info(str("[!] Starting BUILD..."))
+            self.build()
+        if timestamp >= 0 and conf.get("mode") in ["server", "standalone"]:
             log.info(str("[!] Starting CLEAN..."))
             self.clean()
         if timestamp >= 0 and conf.get("mode") in ["server"]:
-            log.info(str("[!] Starting BUILD..."))
-            self.build()
+            log.info(str("[!] Starting WRITE..."))
+            self.write()
         if timestamp >= 0 and conf.get("mode") in ["server", "standalone", "client"]:
             log.info(str("[!] Starting MERGE..."))
             self.merge()
