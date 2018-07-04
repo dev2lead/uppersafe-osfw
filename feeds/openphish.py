@@ -5,7 +5,7 @@
 ##
 # -*- coding: utf-8 -*-
 
-import requests, re, ipaddress
+import requests, string, re, ipaddress
 
 class openphish:
     def __init__(self, log, range, agent, timeout):
@@ -26,17 +26,18 @@ class openphish:
                     data = data + [x for x in response.text.splitlines() if x.strip()]
                     self.threats.clear()
             except:
-                self.log.error(str("Request error in '{}' = {}").format(self.__class__.__name__, element))
+                self.log.error(str("Request error in '{}' = '{}'").format(self.__class__.__name__, element))
         for element in data:
-            try:
-                result = self.parse(element.lower())
-                self.threats.update(result)
-            except:
-                self.log.warning(str("Parse error in '{}' = {}").format(self.__class__.__name__, element))
+            for result in self.parse(element.lower()):
+                if [x for x in string.whitespace + string.punctuation if x not in [".", ":", "/", "-", "_"] and x in result]:
+                    self.log.warning(str("Parse error in '{}' = '{}'").format(self.__class__.__name__, result))
+                else:
+                    self.threats.add(result)
         return self.threats
 
     def parse(self, buffer):
         buffer = buffer.strip('"')
+        buffer = buffer.strip("'")
         buffer = buffer.split(",")[0]
         for element in re.findall("^(https|http|ftps|ftp)(://)(.*)", buffer.strip()):
             buffer = str().join(element)

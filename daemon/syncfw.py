@@ -40,19 +40,28 @@ class syncfw:
         self.start()
 
     def check_append(self, content, chain, label):
-        if chain == ipfw.dnbl:
-            error = dnfw.append(content)
         if chain != ipfw.drop:
-            error = ipfw.append(content, chain, label)
+            ipfw.append(content, chain, label)
+        if chain == ipfw.dnbl:
+            dnfw.append(content)
         log.debug(str("[+] '{}' ({} -> {})").format(content, chain, label))
         return 0
 
     def check_delete(self, content, chain, label):
-        if chain == ipfw.dnbl:
-            error = dnfw.delete(content)
         if chain != ipfw.drop:
-            error = ipfw.delete(content, chain, label)
+            ipfw.delete(content, chain, label)
+        if chain == ipfw.dnbl:
+            dnfw.delete(content)
         log.debug(str("[-] '{}' ({} -> {})").format(content, chain, label))
+        return 0
+
+    def check_commit(self):
+        error = ipfw.commit()
+        if error != 0:
+            raise Exception(error)
+        error = dnfw.commit()
+        if error != 0:
+            raise Exception(error)
         return 0
 
     def fetch(self):
@@ -151,8 +160,7 @@ class syncfw:
                 else:
                     self.threats.pop(row.ipaddr)
         try:
-            ipfw.commit()
-            dnfw.commit()
+            self.check_commit()
             db.session.commit()
         except Exception as error:
             db.session.rollback()
@@ -170,8 +178,7 @@ class syncfw:
                 db.session.add(db.models.threats(ipaddr=element, jsondata=json.dumps(revlookup)))
                 self.threats.pop(element)
         try:
-            ipfw.commit()
-            dnfw.commit()
+            self.check_commit()
             db.session.commit()
         except Exception as error:
             db.session.rollback()
@@ -192,8 +199,7 @@ class syncfw:
                 if row.ipaddr not in self.threats:
                     self.check_append(row.ipaddr, ipfw.ipbl, ipfw.drop)
         try:
-            ipfw.commit()
-            dnfw.commit()
+            self.check_commit()
             db.session.commit()
         except Exception as error:
             db.session.rollback()
@@ -201,28 +207,29 @@ class syncfw:
         log.info(str("[!] RESET part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
-    def refresh(self, timestamp):
-        if timestamp == 0 and conf.get("mode") in ["server", "standalone", "client"]:
+    def refresh(self, counter):
+        if counter == 0 and conf.get("mode") in ["server", "standalone", "client"]:
             log.info(str("[!] Starting RESET..."))
             self.reset()
-        if timestamp >= 0 and conf.get("mode") in ["server", "standalone", "client"]:
+        if counter >= 0 and conf.get("mode") in ["server", "standalone", "client"]:
             log.info(str("[!] Starting FETCH..."))
             self.fetch()
-        if timestamp >= 0 and conf.get("mode") in ["server", "standalone"]:
+        if counter >= 0 and conf.get("mode") in ["server", "standalone"]:
             log.info(str("[!] Starting BUILD..."))
             self.build()
-        if timestamp >= 0 and conf.get("mode") in ["server", "standalone"]:
+        if counter >= 0 and conf.get("mode") in ["server", "standalone"]:
             log.info(str("[!] Starting CLEAN..."))
             self.clean()
-        if timestamp >= 0 and conf.get("mode") in ["server"]:
+        if counter >= 0 and conf.get("mode") in ["server"]:
             log.info(str("[!] Starting WRITE..."))
             self.write()
-        if timestamp >= 0 and conf.get("mode") in ["server", "standalone", "client"]:
+        if counter >= 0 and conf.get("mode") in ["server", "standalone", "client"]:
             log.info(str("[!] Starting MERGE..."))
             self.merge()
         return 0
 
     def start(self):
+        counter = 0
         timestamp = 0
         while timestamp >= 0:
             try:
@@ -231,8 +238,9 @@ class syncfw:
                 log.critical(error)
                 return 1
             if int(time.time()) - timestamp >= conf.get("refreshDelay"):
-                self.refresh(timestamp)
                 timestamp = int(time.time())
+                self.refresh(counter)
+                counter = counter + 1
             else:
                 time.sleep(60)
         return 0

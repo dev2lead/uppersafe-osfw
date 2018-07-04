@@ -3,7 +3,7 @@ db: assets/sqlite.db
 host: 127.0.0.1
 port: 8000
 mode: standalone
-verbose: yes
+verbose: no
 threads: 32
 refreshDelay: 3600
 queryTimeout: 10
@@ -31,7 +31,7 @@ feeds:
   - spamhaus
 # - uppersafe
 exemptions:
-# - 217.78.11.148
+  - 217.78.11.148
   - 127.0.0.1
   - .163.tld
   - .360.tld
@@ -104,6 +104,7 @@ exemptions:
   - .gsuite.tld
   - .hotmail.tld
   - .href.tld
+  - .hubspot.tld
   - .icloud.tld
   - .iconfinder.tld
   - .imageshack.tld
