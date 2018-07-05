@@ -49,5 +49,6 @@ class unbound:
             try:
                 subprocess.check_output(["unbound-control", action], stderr=subprocess.STDOUT)
             except Exception as error:
-                return error
+                if action != "stop":
+                    return error
         return 0
