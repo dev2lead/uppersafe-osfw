@@ -45,10 +45,8 @@ class unbound:
         return 0
 
     def commit(self):
-        for action in ["stop", "start"]:
-            try:
-                subprocess.check_output(["unbound-control", action], stderr=subprocess.STDOUT)
-            except Exception as error:
-                if action != "stop":
-                    return error
+        try:
+            subprocess.check_output(["systemctl", "restart", "unbound"], stderr=subprocess.STDOUT)
+        except Exception as error:
+            return error
         return 0

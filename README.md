@@ -90,6 +90,7 @@ There are 3 ways to launch the firewall:
 - python3 (see also `requirements.txt`)
 - iptables
 - unbound
+- systemd
 - screen
 
 ## Support
