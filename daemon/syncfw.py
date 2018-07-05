@@ -138,7 +138,7 @@ class syncfw:
         return 0
 
     def write(self):
-        with open("assets/threats.txt", "w+") as fd:
+        with open(conf.get("outputFile"), "w+") as fd:
             fd.write(str("\n").join(sorted(self.threats.keys())) + "\n")
         log.info(str("[!] WRITE part 1/1 done ({} threats)").format(len(self.threats)))
         return 0

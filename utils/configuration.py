@@ -5,11 +5,13 @@
 ##
 # -*- coding: utf-8 -*-
 
-import sys, yaml
+import sys, os, yaml
 
 class configuration(dict):
     def __init__(self):
-        self.file = "config.yml"
+        self.file = "config.default.yml"
+        if os.path.isfile("config.yml"):
+            self.file = "config.yml"
         try:
             self.reload()
         except Exception as error:
