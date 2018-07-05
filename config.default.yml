@@ -30,7 +30,6 @@ feeds:
   - phishtank
   - ransomware
   - spamhaus
-# - uppersafe
 exemptions:
   - 217.78.11.148
   - 127.0.0.1

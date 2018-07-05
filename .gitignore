@@ -3,3 +3,4 @@ venv
 config.yml
 assets/sqlite.db
 assets/logs.txt
+feeds/uppersafe.py
