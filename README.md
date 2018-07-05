@@ -18,7 +18,7 @@ OSFW includes 3 main components:
 |-|-|
 |`osfw-sensor`|In charge of monitoring and logging the requests blocked by the firewall|
 |`osfw-syncfw`|In charge of collecting and syncing the threat intelligence feeds|
-|`osfw-webapp`|In charge of managing the web interface|
+|`osfw-webapp`|In charge of managing the web interface (work in progress)|
 
 ## Quick start
 

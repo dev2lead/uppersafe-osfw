@@ -13,10 +13,13 @@ class database:
     def __init__(self, file, verbose=False):
         self.engine = create_engine(str("sqlite:///{}").format(file), echo=verbose)
         self.models = importlib.import_module("models")
-        self.models.exemptions().metadata.create_all(self.engine)
-        self.models.threats().metadata.create_all(self.engine)
-        self.models.events().metadata.create_all(self.engine)
-        self.models.users().metadata.create_all(self.engine)
+        try:
+            self.models.exemptions().metadata.create_all(self.engine)
+            self.models.threats().metadata.create_all(self.engine)
+            self.models.events().metadata.create_all(self.engine)
+            self.models.users().metadata.create_all(self.engine)
+        except:
+            pass
         self.session = sessionmaker()
         self.session.configure(bind=self.engine)
         self.session = self.session()
