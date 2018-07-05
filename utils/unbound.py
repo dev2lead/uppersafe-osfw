@@ -17,7 +17,10 @@ class unbound:
         with open(self.file, "w+") as fd:
             buffer = ["# Unbound configuration", "server:"]
             for key, value in self.conf.items():
-                buffer.append(str("\t{}: {}").format(key, value))
+                if isinstance(value, bool):
+                    buffer.append(str("\t{}: {}").format(key, ["no", "yes"][int(value)]))
+                else:
+                    buffer.append(str("\t{}: {}").format(key, value))
             fd.write(str("\n").join(buffer) + "\n")
         return 0
 
