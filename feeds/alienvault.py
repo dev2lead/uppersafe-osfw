@@ -15,7 +15,7 @@ class alienvault:
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": agent})
         self.timeout = timeout
-        self.threats = set()
+        self.threats = {}
 
     def refresh(self):
         data = []
@@ -23,24 +23,30 @@ class alienvault:
             try:
                 response = self.session.get(element, timeout=self.timeout)
                 if response.status_code == 200:
-                    data = data + [x for x in response.text.splitlines() if x.strip()]
+                    data = data + response.text.splitlines()
                     self.threats.clear()
             except:
                 self.log.error(str("Request error in '{}' = '{}'").format(self.__class__.__name__, element))
         for element in data:
-            for result in self.parse(element.lower()):
-                if [x for x in string.whitespace + string.punctuation if x not in [".", ":", "/", "-", "_"] and x in result]:
-                    self.log.warning(str("Parse error in '{}' = '{}'").format(self.__class__.__name__, result))
-                else:
-                    self.threats.add(result)
+            try:
+                content, revlookup = self.parse(element)
+                if len([x for x in string.whitespace + string.punctuation if x not in [".", ":", "/", "-", "_"] and x in content]) != 0:
+                    raise
+                if len(content) != 0:
+                    if not self.range and re.search("[/][0-9]+$", content):
+                        self.threats.update([[str(x), []] for x in ipaddress.ip_network(content).hosts()])
+                    else:
+                        self.threats.update([[content, revlookup]])
+            except:
+                self.log.warning(str("Parse error in '{}' = '{}'").format(self.__class__.__name__, content))
         return self.threats
 
-    def parse(self, buffer):
-        buffer = buffer.strip('"')
-        buffer = buffer.strip("'")
-        buffer = buffer.split("#")[0]
-        if not self.range and re.search("[/][0-9]+$", buffer.strip()):
-            return [str(x).strip() for x in ipaddress.ip_network(buffer.strip()).hosts()]
-        if buffer.strip():
-            return [buffer.strip()]
-        return []
+    def parse(self, content):
+        content = str().join([x.lower() for x in content if x not in "\"\'"]).strip()
+        try:
+            revlookup = []
+            content = content.split("#")[0]
+            return content.strip(), revlookup
+        except:
+            pass
+        return str(), []

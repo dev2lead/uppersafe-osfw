@@ -10,7 +10,7 @@ queryTimeout: 10
 queryUserAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.com/dev2lead/uppersafe-osfw
 groupRange: yes
 filterMode: classic
-outputFile: /tmp/threats.txt
+streamFile: /tmp/threats.txt
 monitor: /var/log/messages
 network:
   eth: eth+

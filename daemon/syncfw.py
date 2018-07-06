@@ -73,7 +73,7 @@ class syncfw:
             if element not in conf.get("feeds"):
                 self.feeds.pop(element)
         for element in self.feeds.values():
-            self.threats.update([(x, []) for x in element.refresh()])
+            self.threats.update(element.refresh())
         log.info(str("[!] FETCH part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
@@ -138,8 +138,9 @@ class syncfw:
         return 0
 
     def write(self):
-        with open(conf.get("outputFile"), "w+") as fd:
-            fd.write(str("\n").join(sorted(self.threats.keys())) + "\n")
+        with open(conf.get("streamFile"), "w+") as fd:
+            for element, revlookup in sorted(self.threats.items()):
+                fd.write(str("{};{}").format(element, str(",").join(revlookup)) + "\n")
         log.info(str("[!] WRITE part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 

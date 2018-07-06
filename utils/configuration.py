@@ -33,7 +33,7 @@ class configuration(dict):
             "queryUserAgent": str(),
             "groupRange": bool(),
             "filterMode": str(),
-            "outputFile": str(),
+            "streamFile": str(),
             "monitor": str(),
             "network": {
                 "eth": str(),
