@@ -1,26 +1,56 @@
 ---
+# Path of the sqlite database
 db: assets/sqlite.db
+
+# Settings related to flask (web interface)
 host: 127.0.0.1
 port: 8000
+
+# Launch mode of the firewall (standalone|server|client)
+# See README.md to learn more
 mode: standalone
+
+# Debugging
 verbose: no
-threads: 32
+
+# Number of threads to use for the process pool (only used in standalone and server mode)
+threads: 16
+
+# Time interval between each refresh cycle
 refreshDelay: 3600
+
+# Settings related to HTTP(S) requests (to fetch feeds)
 queryTimeout: 10
 queryUserAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.com/dev2lead/uppersafe-osfw
+
+# Group IP range (if set to no each IP range will be converted to a list of IP addresses)
 groupRange: yes
+
+# Settings related to filtering (classic|forward)
+# classic = filter traffic based on the INPUT chain and OUTPUT chain of iptables
+# forward = filter traffic based only the FORWARD chain of iptables
 filterMode: classic
-streamFile: /tmp/threats.txt
+
+# Location of the file where the threats list must be saved (only used in server mode)
+publish: /tmp/threats.txt
+
+# Location of the file where iptables events can be retieved
 monitor: /var/log/messages
+
+# Settings related to network interfaces (used by iptables)
 network:
   eth: eth+
   ppp: ppp+
   tun: tun+
+
+# Settings related to unbound server
 unbound:
   verbosity: 1
   hide-version: yes
   interface: 0.0.0.0
   access-control: 10.0.0.0/8 allow
+
+# List of the feeds to fetch (must be correlated with the files in the feeds directory)
 feeds:
   - alienvault
   - blocklist
@@ -30,145 +60,150 @@ feeds:
   - phishtank
   - ransomware
   - spamhaus
+
+# List of IP addresses and domain names to ignore
+# See README.md to learn more about the syntax
 exemptions:
-  - 217.78.11.148
   - 127.0.0.1
-  - .163.tld
-  - .360.tld
-  - .abuse.co
-  - .adf.ly
-  - .adjust.tld
-  - .akamai.tld
-  - .akamaiedge.tld
-  - .akamaihd.tld
-  - .alibaba.tld
-  - .alienvault.tld
-  - .aliexpress.tld
-  - .amazon.tld
-  - .amzn.to
-  - .aol.tld
-  - .aolcdn.tld
-  - .aryaka.tld
-  - .baidu.tld
-  - .bing.tld
-  - .bit.ly
-  - .bitly.tld
-  - .bitbucket.tld
-  - .blocklist.tld
-  - .box.tld
-  - .buff.ly
-  - .buffer.tld
-  - .cinsscore.tld
-  - .cloudflare.tld
-  - .discord.tld
-  - .discordapp.tld
-  - .doubleclick.tld
-  - .dropbox.tld
-  - .duckduckgo.tld
-  - .dyn.tld
-  - .dyndns.tld
-  - .emailretargeting.tld
-  - .facebook.tld
-  - .fb.tld
-  - .fbcdn.tld
-  - .free.tld
-  - .freecdn.tld
-  - .g.co
-  - .gandi.tld
-  - .ggpht.tld
-  - .github.tld
-  - .githubusercontent.tld
-  - .gitlab.tld
-  - .gmail.tld
-  - .goo.gl
-  - .google.tld
-  - .googleadservices.tld
-  - .googleadwords.tld
-  - .googleapis.tld
-  - .googleapps.tld
-  - .googlecache.tld
-  - .googlecode.tld
-  - .googledocs.tld
-  - .googledrive.tld
-  - .googlegroups.tld
-  - .googleimages.tld
-  - .googlemail.tld
-  - .googleplus.tld
-  - .googleproxy.tld
-  - .googlesearch.tld
-  - .googlesyndication.tld
-  - .googletranslate.tld
-  - .googleusercontent.tld
-  - .greensnow.tld
-  - .gstatic.tld
-  - .gsuite.tld
-  - .hotmail.tld
-  - .href.tld
-  - .hubspot.tld
-  - .icloud.tld
-  - .iconfinder.tld
-  - .imageshack.tld
-  - .imgur.tld
-  - .instagram.tld
-  - .line.tld
-  - .linkedin.tld
-  - .live.tld
-  - .lnkd.tld
-  - .mailchimp.tld
-  - .mailgun.tld
-  - .mailjet.tld
-  - .mandrill.tld
-  - .mandrillapp.tld
-  - .maxcdn.tld
-  - .messenger.tld
-  - .microsoft.tld
-  - .microsoftonline.tld
-  - .microsoftstore.tld
-  - .msdn.tld
-  - .msft.tld
-  - .msftncsi.tld
-  - .naver.tld
-  - .netflix.tld
-  - .office.tld
-  - .office365.tld
-  - .openphish.tld
-  - .outlook.tld
-  - .ovh.tld
-  - .ow.ly
-  - .parastorage.tld
-  - .phishtank.tld
-  - .pinterest.tld
-  - .postimage.tld
-  - .postimg.tld
-  - .prestashop.tld
-  - .qq.tld
-  - .quora.tld
-  - .reddit.tld
-  - .shopify.tld
-  - .similarcdn.tld
-  - .similarweb.tld
-  - .sina.tld
-  - .sohu.tld
-  - .spamhaus.tld
-  - .t.co
-  - .telegram.tld
-  - .tiny.cc
-  - .tinyurl.tld
-  - .tumblr.tld
-  - .twimg.tld
-  - .twitch.tld
-  - .twitter.tld
-  - .uppersafe.tld
-  - .v.ht
-  - .vk.tld
-  - .weibo.tld
-  - .whatsapp.tld
-  - .wix.tld
-  - .yahoo.tld
-  - .ymail.tld
-  - .youku.tld
-  - .youtu.be
-  - .youtube.tld
-  - .ytimg.tld
-  - .yy.tld
-  - .wetransfer.tld
+  - 217.78.11.148
+  - "*?.163.com"
+  - "*?.360.cn"
+  - "*?.abuse.co"
+  - "*?.adf.ly"
+  - "*?.adjust.com"
+  - "*?.akamai.com"
+  - "*?.akamaiedge.com"
+  - "*?.akamaihd.com"
+  - "*?.alibaba.com"
+  - "*?.alienvault.com"
+  - "*?.aliexpress.com"
+  - "*?.amazon.tld"
+  - "*?.amazonaws.com"
+  - "*?.amzn.to"
+  - "*?.aol.com"
+  - "*?.aryaka.com"
+  - "*?.baidu.com"
+  - "*?.bing.com"
+  - "*?.bit.ly"
+  - "*?.bitly.com"
+  - "*?.bitbucket.com"
+  - "*?.blocklist.de"
+  - "*?.box.com"
+  - "*?.buff.ly"
+  - "*?.buffer.com"
+  - "*?.cinsscore.com"
+  - "*?.cloudflare.com"
+  - "*?.discordapp.com"
+  - "*?.doubleclick.com"
+  - "*?.dropbox.com"
+  - "*?.duckduckgo.com"
+  - "*?.dyn.com"
+  - "*?.dyndns.com"
+  - "*?.emailretargeting.com"
+  - "*?.facebook.com"
+  - "*?.fb.com"
+  - "*?.fbcdn.com"
+  - "*?.free.fr"
+  - "*?.g.co"
+  - "*?.gandi.net"
+  - "*?.ggpht.com"
+  - "*?.github.com"
+  - "*?.githubusercontent.com"
+  - "*?.gitlab.com"
+  - "*?.gmail.com"
+  - "*?.goo.gl"
+  - "*?.google.tld"
+  - "*?.googleadservices.com"
+  - "*?.googleadwords.com"
+  - "*?.googleapis.com"
+  - "*?.googleapps.com"
+  - "*?.googlecache.com"
+  - "*?.googlecode.com"
+  - "*?.googledocs.com"
+  - "*?.googledrive.com"
+  - "*?.googlegroups.com"
+  - "*?.googleimages.com"
+  - "*?.googlemail.com"
+  - "*?.googleplus.com"
+  - "*?.googleproxy.com"
+  - "*?.googlesearch.com"
+  - "*?.googlesyndication.com"
+  - "*?.googletranslate.com"
+  - "*?.googleusercontent.com"
+  - "*?.greensnow.co"
+  - "*?.gstatic.com"
+  - "*?.gsuite.com"
+  - "*?.hotmail.com"
+  - "*?.hubspot.com"
+  - "*?.icloud.com"
+  - "*?.iconfinder.com"
+  - "*?.imageshack.us"
+  - "*?.imgur.com"
+  - "*?.instagram.com"
+  - "*?.line.me"
+  - "*?.linkedin.com"
+  - "*?.live.com"
+  - "*?.lnkd.in"
+  - "*?.mailchimp.com"
+  - "*?.mailgun.com"
+  - "*?.mailjet.com"
+  - "*?.mandrill.com"
+  - "*?.mandrillapp.com"
+  - "*?.maxcdn.com"
+  - "*?.medium.com"
+  - "*?.messenger.com"
+  - "*?.microsoft.com"
+  - "*?.microsoftonline.com"
+  - "*?.microsoftonline-p.com"
+  - "*?.microsoftonline-int.com"
+  - "*?.microsoftstore.com"
+  - "*?.msdn.com"
+  - "*?.msft.com"
+  - "*?.msftncsi.com"
+  - "*?.msn.com"
+  - "*?.naver.com"
+  - "*?.netflix.com"
+  - "*?.office.com"
+  - "*?.office365.com"
+  - "*?.openphish.com"
+  - "*?.outlook.com"
+  - "*?.ovh.com"
+  - "*?.ow.ly"
+  - "*?.phishtank.com"
+  - "*?.pinterest.com"
+  - "*?.po.st"
+  - "*?.postimage.org"
+  - "*?.postimg.org"
+  - "*?.prestashop.com"
+  - "*?.qq.com"
+  - "*?.quora.com"
+  - "*?.reddit.com"
+  - "*?.shopify.com"
+  - "*?.similarcdn.com"
+  - "*?.similarweb.com"
+  - "*?.sina.com"
+  - "*?.sohu.com"
+  - "*?.spamhaus.org"
+  - "*?.t.co"
+  - "*?.telegram.org"
+  - "*?.tiny.cc"
+  - "*?.tinyurl.com"
+  - "*?.tumblr.com"
+  - "*?.twimg.com"
+  - "*?.twitch.com"
+  - "*?.twitter.com"
+  - "*?.uppersafe.tld"
+  - "*?.v.ht"
+  - "*?.vimeo.com"
+  - "*?.vk.com"
+  - "*?.weibo.com"
+  - "*?.whatsapp.com"
+  - "*?.wix.com"
+  - "*?.yahoo.com"
+  - "*?.ymail.com"
+  - "*?.youku.com"
+  - "*?.youtu.be"
+  - "*?.youtube.com"
+  - "*?.ytimg.com"
+  - "*?.yy.com"
+  - "*?.wetransfer.com"

@@ -55,7 +55,7 @@ It happens that some legit and top ranked websites got blocked because of differ
 
 To prevent these websites from being blocked, you can specify them as a list in the configuration file.
 
-In case you want to edit the default list, you can use a magic keyword `.tld` that will match any top level domain and some specific second level domain names.
+In case you want to edit the default list, you can use a magic keyword `tld` that will match any top level domain and some specific second level domain names.
 For example, `domain.tld` will match all of the following cases:
 
 - `domain.uk`
@@ -73,7 +73,7 @@ For example, `domain.tld` will match all of the following cases:
 - `domain.edu.jp`
 - `domain.gov.jp`
 
-There is also a way to make a rule act as a subdomain wildcard, to do so you need to start the rule with a `.` such as the ones in the default configuration file.
+There is a way to perform a subdomain wildcard, to do so you need to use a `*?` instead of the subdomain (for example `*?.domain.com` will match `domain.com` and `a.domain.com` but not `b.a.domain.com`).
 
 ## Launch mode
 

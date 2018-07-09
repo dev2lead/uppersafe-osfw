@@ -67,10 +67,12 @@ class syncfw:
     def fetch(self):
         for element in conf.get("feeds"):
             if element not in self.feeds.keys():
+                log.info(str("Subscribing to '{}'").format(element))
                 module = getattr(importlib.import_module(str("feeds.{}").format(element)), element)
                 self.feeds.update({element: module(log, conf.get("groupRange"), conf.get("queryUserAgent"), conf.get("queryTimeout"))})
         for element in sorted(self.feeds.keys()):
             if element not in conf.get("feeds"):
+                log.warning(str("Unsubscribing from '{}'").format(element))
                 self.feeds.pop(element)
         for element in self.feeds.values():
             self.threats.update(element.refresh())
@@ -106,11 +108,12 @@ class syncfw:
             db.models.exemptions().metadata.drop_all(db.engine)
             db.models.exemptions().metadata.create_all(db.engine)
             db.session.commit()
+            db.session.expunge_all()
         except Exception as error:
             db.session.rollback()
             log.error(error)
         log.info(str("[!] CLEAN part 1/2 done ({} threats)").format(len(self.threats)))
-        for row in db.session.query(db.models.exemptions).order_by(db.models.exemptions.id).all():
+        for row in db.session.query(db.models.exemptions).order_by(db.models.exemptions.id).yield_per(100):
             regex = []
             if row.domain:
                 pattern = row.domain
@@ -121,10 +124,10 @@ class syncfw:
                     regex.append("((co|com|net|org|edu|gov)[.])?([a-z]+)")
                 if len(node) != 0 and index == 0 and node != "tld":
                     regex.append(str("({})").format(node))
-                if len(node) != 0 and index != 0:
+                if len(node) != 0 and index != 0 and node != "*?":
                     regex.append(str("({})[.]").format(node))
-                if len(node) == 0 and index != 0:
-                    regex.append("((.*)[.])?")
+                if len(node) != 0 and index != 0 and node == "*?":
+                    regex.append("(([^.]+)[.])?")
             for element, revlookup in sorted(self.threats.items()):
                 for record in revlookup:
                     if re.search(str("^{}$").format(str().join(reversed(regex))), record):
@@ -138,14 +141,14 @@ class syncfw:
         return 0
 
     def write(self):
-        with open(conf.get("streamFile"), "w+") as fd:
+        with open(conf.get("publish"), "w+") as fd:
             for element, revlookup in sorted(self.threats.items()):
                 fd.write(str("{};{}").format(element, str(",").join(revlookup)) + "\n")
         log.info(str("[!] WRITE part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
     def merge(self):
-        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).all():
+        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).yield_per(100):
             if row.domain:
                 if row.domain not in self.threats or json.loads(row.jsondata) != self.threats.get(row.domain):
                     for record in json.loads(row.jsondata):
@@ -163,6 +166,7 @@ class syncfw:
         try:
             self.check_commit()
             db.session.commit()
+            db.session.expunge_all()
         except Exception as error:
             db.session.rollback()
             log.error(error)
@@ -181,6 +185,7 @@ class syncfw:
         try:
             self.check_commit()
             db.session.commit()
+            db.session.expunge_all()
         except Exception as error:
             db.session.rollback()
             log.error(error)
@@ -190,7 +195,7 @@ class syncfw:
     def reset(self):
         ipfw.init()
         dnfw.init()
-        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).all():
+        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).yield_per(100):
             if row.domain:
                 if row.domain not in self.threats:
                     for record in json.loads(row.jsondata):
@@ -202,6 +207,7 @@ class syncfw:
         try:
             self.check_commit()
             db.session.commit()
+            db.session.expunge_all()
         except Exception as error:
             db.session.rollback()
             log.error(error)
