@@ -27,7 +27,7 @@ class configuration(dict):
             "port": int(),
             "mode": str(),
             "verbose": bool(),
-            "threads": int(),
+            "workers": int(),
             "refreshDelay": int(),
             "queryTimeout": int(),
             "queryUserAgent": str(),

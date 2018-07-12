@@ -21,19 +21,19 @@ if [ -z "$1" ]; then
 fi
 
 if [ "$1" == "daemon/sensor" ]; then
-    python main.py daemon/sensor
+    python osfw.py daemon/sensor
 fi
 
 if [ "$1" == "daemon/syncfw" ]; then
-    python main.py daemon/syncfw
+    python osfw.py daemon/syncfw
 fi
 
 if [ "$1" == "webapp" ]; then
-    python main.py webapp | tee assets/logs.txt
+    python osfw.py webapp
 fi
 
 if [ "$1" == "assert" ]; then
-    python main.py assert
+    python osfw.py assert
 fi
 
 popd > /dev/null 2>&1

@@ -76,11 +76,13 @@ class syncfw:
                 self.feeds.pop(element)
         for element in self.feeds.values():
             self.threats.update(element.refresh())
+        if len(self.threats.keys()):
+            db.engine.dispose()
         log.info(str("[!] FETCH part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 
     def build(self):
-        with pebble.ProcessPool(conf.get("threads")) as pool:
+        with pebble.ProcessPool(conf.get("workers")) as pool:
             instance = pool.map(resolv, sorted(self.threats.keys()), timeout=conf.get("queryTimeout"))
             iterator = instance.result()
             for index, element in enumerate(sorted(self.threats.keys()), start=1):
@@ -101,19 +103,17 @@ class syncfw:
     def clean(self):
         for element in conf.get("exemptions"):
             if re.search("[.][a-z]+$", element):
-                db.session.add(db.models.exemptions(domain=element.lower()))
+                db.session_append(db.models.exemptions(domain=element.lower()))
             else:
-                db.session.add(db.models.exemptions(ipaddr=element.lower()))
+                db.session_append(db.models.exemptions(ipaddr=element.lower()))
         try:
             db.models.exemptions().metadata.drop_all(db.engine)
             db.models.exemptions().metadata.create_all(db.engine)
-            db.session.commit()
-            db.session.expunge_all()
+            db.session_commit()
         except Exception as error:
-            db.session.rollback()
             log.error(error)
         log.info(str("[!] CLEAN part 1/2 done ({} threats)").format(len(self.threats)))
-        for row in db.session.query(db.models.exemptions).order_by(db.models.exemptions.id).yield_per(100):
+        for row in db.session.query(db.models.exemptions).order_by(db.models.exemptions.id).yield_per(db.chunk):
             regex = []
             if row.domain:
                 pattern = row.domain
@@ -148,27 +148,25 @@ class syncfw:
         return 0
 
     def merge(self):
-        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).yield_per(100):
+        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).yield_per(db.chunk):
             if row.domain:
                 if row.domain not in self.threats or json.loads(row.jsondata) != self.threats.get(row.domain):
                     for record in json.loads(row.jsondata):
                         self.check_delete(record, ipfw.ipbl, ipfw.dnbl)
                     self.check_delete(row.domain, ipfw.dnbl, ipfw.drop)
-                    db.session.delete(row)
+                    db.session_delete(row)
                 else:
                     self.threats.pop(row.domain)
             if row.ipaddr:
                 if row.ipaddr not in self.threats or json.loads(row.jsondata) != self.threats.get(row.ipaddr):
                     self.check_delete(row.ipaddr, ipfw.ipbl, ipfw.drop)
-                    db.session.delete(row)
+                    db.session_delete(row)
                 else:
                     self.threats.pop(row.ipaddr)
         try:
             self.check_commit()
-            db.session.commit()
-            db.session.expunge_all()
+            db.session_commit()
         except Exception as error:
-            db.session.rollback()
             log.error(error)
         log.info(str("[!] MERGE part 1/2 done ({} threats)").format(len(self.threats)))
         for element, revlookup in sorted(self.threats.items()):
@@ -176,18 +174,16 @@ class syncfw:
                 for record in revlookup:
                     self.check_append(record, ipfw.ipbl, ipfw.dnbl)
                 self.check_append(element, ipfw.dnbl, ipfw.drop)
-                db.session.add(db.models.threats(domain=element, jsondata=json.dumps(revlookup)))
+                db.session_append(db.models.threats(domain=element, jsondata=json.dumps(revlookup)))
                 self.threats.pop(element)
             else:
                 self.check_append(element, ipfw.ipbl, ipfw.drop)
-                db.session.add(db.models.threats(ipaddr=element, jsondata=json.dumps(revlookup)))
+                db.session_append(db.models.threats(ipaddr=element, jsondata=json.dumps(revlookup)))
                 self.threats.pop(element)
         try:
             self.check_commit()
-            db.session.commit()
-            db.session.expunge_all()
+            db.session_commit()
         except Exception as error:
-            db.session.rollback()
             log.error(error)
         log.info(str("[!] MERGE part 2/2 done ({} threats)").format(len(self.threats)))
         return 0
@@ -195,7 +191,7 @@ class syncfw:
     def reset(self):
         ipfw.init()
         dnfw.init()
-        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).yield_per(100):
+        for row in db.session.query(db.models.threats).order_by(db.models.threats.id).yield_per(db.chunk):
             if row.domain:
                 if row.domain not in self.threats:
                     for record in json.loads(row.jsondata):
@@ -206,10 +202,8 @@ class syncfw:
                     self.check_append(row.ipaddr, ipfw.ipbl, ipfw.drop)
         try:
             self.check_commit()
-            db.session.commit()
-            db.session.expunge_all()
+            db.session_commit()
         except Exception as error:
-            db.session.rollback()
             log.error(error)
         log.info(str("[!] RESET part 1/1 done ({} threats)").format(len(self.threats)))
         return 0

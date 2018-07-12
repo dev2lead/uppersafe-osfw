@@ -13,11 +13,11 @@ mode: standalone
 # Debugging
 verbose: no
 
-# Number of threads to use for the process pool (only used in standalone and server mode)
-threads: 16
+# Number of workers to use for the process pool (only used in standalone and server mode)
+workers: 8
 
 # Time interval between each refresh cycle
-refreshDelay: 3600
+refreshDelay: 14400
 
 # Settings related to HTTP(S) requests (to fetch feeds)
 queryTimeout: 10

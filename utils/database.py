@@ -23,3 +23,27 @@ class database:
         self.session = sessionmaker()
         self.session.configure(bind=self.engine)
         self.session = self.session()
+        self.chunk = 100
+
+    def session_append(self, row):
+        try:
+            self.session.add(row)
+        except:
+            raise
+        return 0
+
+    def session_delete(self, row):
+        try:
+            self.session.delete(row)
+        except:
+            raise
+        return 0
+
+    def session_commit(self):
+        try:
+            self.session.commit()
+            self.session.expunge_all()
+        except:
+            self.session.rollback()
+            raise
+        return 0
