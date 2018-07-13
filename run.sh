@@ -15,25 +15,20 @@ export LC_ALL="C.UTF-8"
 export LANG="C.UTF-8"
 
 if [ -z "$1" ]; then
-    screen -dmS osfw-sensor bash run.sh daemon/sensor
-    screen -dmS osfw-syncfw bash run.sh daemon/syncfw
-    screen -dmS osfw-webapp bash run.sh webapp
-fi
-
-if [ "$1" == "daemon/sensor" ]; then
-    python osfw.py daemon/sensor
-fi
-
-if [ "$1" == "daemon/syncfw" ]; then
-    python osfw.py daemon/syncfw
-fi
-
-if [ "$1" == "webapp" ]; then
-    python osfw.py webapp
-fi
-
-if [ "$1" == "assert" ]; then
-    python osfw.py assert
+    RESULT=`find /var/run/screen -name "*.osfw-sensor"`
+    if [ -z "$RESULT" ]; then
+	screen -dmS osfw-sensor python osfw.py daemon/sensor
+    fi
+    RESULT=`find /var/run/screen -name "*.osfw-syncfw"`
+    if [ -z "$RESULT" ]; then
+	screen -dmS osfw-syncfw python osfw.py daemon/syncfw
+    fi
+    RESULT=`find /var/run/screen -name "*.osfw-webapp"`
+    if [ -z "$RESULT" ]; then
+	screen -dmS osfw-webapp python osfw.py webapp
+    fi
+else
+    python osfw.py "$1"
 fi
 
 popd > /dev/null 2>&1

@@ -19,7 +19,7 @@ workers: 8
 # Time interval between each refresh cycle
 refreshDelay: 14400
 
-# Settings related to HTTP(S) requests (to fetch feeds)
+# Settings related to DNS and HTTP(S) requests (to fetch feeds)
 queryTimeout: 10
 queryUserAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.com/dev2lead/uppersafe-osfw
 
@@ -27,8 +27,8 @@ queryUserAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.c
 groupRange: yes
 
 # Settings related to filtering (classic|forward)
-# classic = filter traffic based on the INPUT chain and OUTPUT chain of iptables
-# forward = filter traffic based only the FORWARD chain of iptables
+# In classic mode, filtering is based on the INPUT chain and OUTPUT chain of iptables
+# In forward mode, filtering is only based on the FORWARD chain of iptables
 filterMode: classic
 
 # Location of the file where the threats list must be saved (only used in server mode)
