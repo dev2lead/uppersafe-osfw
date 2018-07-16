@@ -1,8 +1,8 @@
 *~
 venv
 config.yml
-assets/cache
 assets/logs.txt
 assets/sqlite.db
 assets/unbound.conf
+assets/cache/*.txt
 feeds/uppersafe.py
