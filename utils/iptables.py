@@ -117,14 +117,14 @@ class iptables:
         return 0
 
     def commit(self):
-        with tempfile.NamedTemporaryFile("w+") as fd:
+        with tempfile.NamedTemporaryFile("w+") as fp:
             self.buffer = ["*filter"] + self.buffer + ["COMMIT"]
             for element in self.buffer:
-                fd.write(element + "\n")
-            fd.seek(0)
+                fp.write(element + "\n")
+            fp.seek(0)
             self.buffer.clear()
             try:
-                subprocess.check_output(["iptables-restore", "-n"], stdin=fd, stderr=subprocess.STDOUT)
+                subprocess.check_output(["iptables-restore", "-n"], stdin=fp, stderr=subprocess.STDOUT)
             except Exception as error:
                 return error
         return 0

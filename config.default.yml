@@ -69,6 +69,7 @@ exemptions:
   - "*?.163.com"
   - "*?.360.cn"
   - "*?.abuse.co"
+  - "*?.academia.edu"
   - "*?.adf.ly"
   - "*?.adjust.com"
   - "*?.akamai.com"

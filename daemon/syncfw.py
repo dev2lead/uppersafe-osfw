@@ -141,9 +141,9 @@ class syncfw:
         return 0
 
     def write(self):
-        with open(conf.get("publish"), "w+") as fd:
+        with open(conf.get("publish"), "w+") as fp:
             for element, revlookup in sorted(self.threats.items()):
-                fd.write(str("{};{}").format(element, str(",").join(revlookup)) + "\n")
+                fp.write(str("{};{}").format(element, str(",").join(revlookup)) + "\n")
         log.info(str("[!] WRITE part 1/1 done ({} threats)").format(len(self.threats)))
         return 0
 

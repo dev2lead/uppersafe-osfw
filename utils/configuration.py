@@ -19,8 +19,8 @@ class configuration(dict):
             sys.exit()
 
     def reload(self):
-        with open(self.file, "r+") as fd:
-            self.data = yaml.load(fd)
+        with open(self.file, "r+") as fp:
+            self.data = yaml.load(fp)
         self.verify({
             "db": str(),
             "host": str(),

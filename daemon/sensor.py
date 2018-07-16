@@ -30,11 +30,11 @@ class sensor:
             self.idx = os.stat(file).st_size
         self.ino = os.stat(file).st_ino
         log.info(str("[!] Subscribing to file '{}'").format(file))
-        with open(file) as fd:
-            fd.seek(self.idx)
+        with open(file) as fp:
+            fp.seek(self.idx)
             try:
                 while self.ino == os.stat(file).st_ino:
-                    for element in [x for x in fd.read().splitlines() if x.strip()]:
+                    for element in [x for x in fp.read().splitlines() if x.strip()]:
                         self.parse(element)
                     time.sleep(1)
             except:
