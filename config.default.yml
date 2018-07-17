@@ -170,6 +170,7 @@ exemptions:
   - "*?.outlook.com"
   - "*?.ovh.com"
   - "*?.ow.ly"
+  - "*?.pastebin.com"
   - "*?.phishtank.com"
   - "*?.pinterest.com"
   - "*?.po.st"

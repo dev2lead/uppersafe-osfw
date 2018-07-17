@@ -11,7 +11,7 @@ from sqlalchemy.orm import sessionmaker
 
 class database:
     def __init__(self, file, verbose=False):
-        self.engine = create_engine(str("sqlite:///{}").format(file), echo=verbose)
+        self.engine = create_engine(str("sqlite:///{}").format(file), echo=verbose, connect_args={"timeout": 300})
         self.models = importlib.import_module("models")
         try:
             self.models.exemptions().metadata.create_all(self.engine)
@@ -29,14 +29,14 @@ class database:
         try:
             self.session.add(row)
         except:
-            raise
+            return 1
         return 0
 
     def session_delete(self, row):
         try:
             self.session.delete(row)
         except:
-            raise
+            return 1
         return 0
 
     def session_commit(self):
@@ -45,5 +45,6 @@ class database:
             self.session.expunge_all()
         except:
             self.session.rollback()
+            self.session.expunge_all()
             raise
         return 0
