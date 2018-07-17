@@ -5,7 +5,7 @@
 ##
 # -*- coding: utf-8 -*-
 
-import requests, string, re, ipaddress
+import os, requests, string, re, ipaddress
 
 class openphish:
     def __init__(self, log, group, agent, timeout):
@@ -15,6 +15,7 @@ class openphish:
         self.session = requests.Session()
         self.session.headers.update({"User-Agent": agent})
         self.timeout = timeout
+        self.cache = str("assets/cache/{}.txt").format(self.__class__.__name__)
 
     def refresh(self):
         data = []
@@ -26,12 +27,12 @@ class openphish:
                     data = data + response.text.splitlines()
             except:
                 self.log.error(str("Request error in '{}' = '{}'").format(self.__class__.__name__, element))
-        if len(data) == 0:
-            with open(str("assets/cache/{}.txt").format(self.__class__.__name__), "r+") as fp:
-                data = fp.read().splitlines()
-        else:
-            with open(str("assets/cache/{}.txt").format(self.__class__.__name__), "w+") as fp:
+        if len(data) != 0:
+            with open(self.cache, "w+") as fp:
                 fp.write(str("\n").join(data))
+        if len(data) == 0 and os.path.isfile(self.cache):
+            with open(self.cache, "r+") as fp:
+                data = fp.read().splitlines()
         for element in data:
             try:
                 content, revlookup = self.parse(element)
