@@ -27,8 +27,7 @@ queryUserAgent: UPPERSAFE-OSFW (UPPERSAFE Open Source Firewall) https://github.c
 groupRange: yes
 
 # Settings related to filtering (classic|forward)
-# In classic mode, filtering is based on the INPUT chain and OUTPUT chain of iptables
-# In forward mode, filtering is only based on the FORWARD chain of iptables
+# See README.md to learn more
 filterMode: classic
 
 # Location of the file where the threats list must be saved (only used in server mode)
