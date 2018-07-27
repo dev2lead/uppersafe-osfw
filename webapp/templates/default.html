@@ -14,58 +14,110 @@
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+		<style type="text/css">
+.main {
+	margin: 56px 0 0 0;
+}
+
+.page {
+	padding: 15px 15px 15px 15px;
+}
+
+.sidebar {
+	position: fixed;
+	overflow: scroll;
+	height: calc(100vh - 56px);
+	padding: 15px 15px 15px 15px;
+	background: #EEEEEE;
+}
+
+.template {
+	display: none;
+}
+		</style>
 	</head>
 	<body>
-		<nav class="navbar navbar-dark bg-dark">
-			<div class="container">
-				<a class="navbar-brand" href="#">OSFW</a>
-				<a class="btn btn-dark" href="#"><span class="fa fa-power-off"></span></a>
-			</div>
+		<nav class="navbar navbar-dark bg-dark fixed-top">
+			<a class="navbar-brand" href="#">OSFW - Dashboard</a>
+			<a class="btn btn-dark" href="#"><span class="fa fa-power-off"></span></a>
 		</nav>
-		<div class="main">
-			<div class="container">
-				<table class="table table-sm table-hover">
-					<thead>
-						<tr>
-							<th>Source</th>
-							<th>Destination</th>
-							<th>Port</th>
-							<th>Datetime UTC</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="item template">
-							<td class="data source"><code class="text-dark"></code></td>
-							<td class="data destination"><code class="text-dark"></code></td>
-							<td class="data port"><span class="badge badge-secondary"></span></td>
-							<td class="data datetime"><code class="text-dark"></code></td>
-						</tr>
-					</tbody>
-				</table>
+		<div class="main container-fluid">
+			<div class="row">
+				<div class="col-2 sidebar">
+					<form>
+						<div class="form-group">
+							<label for="">Time range</label>
+							<select class="form-control" name="range">
+								<option value="5m">Last 5 minutes</option>
+								<option value="60m">Last 60 minutes</option>
+								<option value="4h">Last 4 hours</option>
+								<option value="24h">Last 24 hours</option>
+								<option value="7d">Last 7 days</option>
+								<option value="30d">Last 30 days</option>
+							</select>
+						</div>
+						<div class="form-group">
+							<label for="">Port filters</label>
+							<input class="form-control" type="text" name="only"/>
+						</div>
+						<div class="form-group">
+							<button class="btn btn-block btn-outline-primary refresh" type="button">Update</button>
+						</div>
+					</form>
+				</div>
+				<div class="col-10 ml-auto page">
+					<div class="sheet"></div>
+					<table class="table table-sm table-hover">
+						<thead>
+							<tr>
+								<th>Datetime UTC</th>
+								<th>Source</th>
+								<th>Destination</th>
+								<th class="text-right">Port</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr class="template">
+								<td class="data datetime"><code class="text-primary"></code></td>
+								<td class="data source"><code class="text-dark"></code></td>
+								<td class="data destination"><code class="text-dark"></code></td>
+								<td class="data port text-right"><span class="badge badge-secondary"></span></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		<script>
 			$(function () {
-				$.ajax({
-					"method": "GET",
-					"url": "/api/events",
-					"success": function (data) {
-						var json = JSON.parse(data);
-						var template = $(".item.template");
-						
-						template.hide();
-						json.forEach(function (element, index) {
-							var item = template.clone().attr("class", "item");
+				var refresh = function (event) {
+					var that = this;
+					var text = $(that).text();
+					
+					$(that).html($("<i></i>").attr("class", "fa fa-refresh fa-spin"));
+					$.ajax({
+						"url": "/api/events?range=" + $("[name=range]").val() + "&only=" + $("[name=only]").val(),
+						"method": "GET",
+						"success": function (data) {
+							var json = JSON.parse(data);
+							var template = $(".template");
 							
-							item.show();
-							item.find(".data.source").children().text(element.source);
-							item.find(".data.destination").children().text(element.destination);
-							item.find(".data.port").children().text(element.port);
-							item.find(".data.datetime").children().text(element.datetime);
-							template.parent().append(item);
-						});
-					}
-				});
+							template.parent().find(".item").remove();
+							json.forEach(function (element, index) {
+								var item = template.clone().attr("class", "item");
+								
+								item.find(".data.datetime").children().text(element.datetime);
+								item.find(".data.source").children().text(element.source);
+								item.find(".data.destination").children().text(element.destination);
+								item.find(".data.port").children().text(element.port);
+								template.parent().append(item);
+							});
+							$(that).text(text);
+						}
+					});
+				}
+				
+				$(".refresh").on("click", refresh).click();
 			});
 		</script>
 	</body>
