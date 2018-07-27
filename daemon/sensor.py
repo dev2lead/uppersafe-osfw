@@ -17,7 +17,7 @@ class sensor:
     def parse(self, buffer):
         for source, destination, port in re.findall(".* SRC=([0-9a-f:.]+) DST=([0-9a-f:.]+) .* DPT=([0-9]+) .*", buffer, re.IGNORECASE):
             log.info(str("Blocking '{}' -> '{}:{}'").format(source, destination, port))
-            db.session_append(db.models.events(source=source, destination=destination, port=port))
+            db.session_append(db.models.events(source=source, destination=destination, port=port, creation=int(time.time())))
         try:
             db.session_commit()
         except Exception as error:

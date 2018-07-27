@@ -84,6 +84,7 @@ exemptions:
   - "*?.aryaka.com"
   - "*?.baidu.com"
   - "*?.bing.com"
+  - "*?.bit.do"
   - "*?.bit.ly"
   - "*?.bitly.com"
   - "*?.bitbucket.com"

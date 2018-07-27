@@ -1,26 +1,72 @@
 <!DOCTYPE html>
 <html itemscope itemtype="http://schema.org/WebPage" lang="en-US">
-  <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
-    <meta name="description" content=""/>
-    <meta name="keywords" content=""/>
-    <meta name="author" content=""/>
-    <title>OSFW</title>
-    <link rel="canonical" href=""/>
-    <link rel="icon" href="/static/images/favicon.ico"/>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css"/>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-  </head>
-  <body>
-    <todo-iteme>
-      <p>CHEERS</p>
-    </todo-iteme>
-    <script>
-      Vue.component("todo-item", {
-      });
-    </script>
-  </body>
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0"/>
+		<meta name="description" content="UPPERSAFE Open Source Firewall"/>
+		<meta name="keywords" content=""/>
+		<meta name="author" content="Nicolas THIBAUT"/>
+		<title>OSFW</title>
+		<link rel="canonical" href=""/>
+		<link rel="icon" href="/static/images/favicon.ico"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css"/>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+	</head>
+	<body>
+		<nav class="navbar navbar-dark bg-dark">
+			<div class="container">
+				<a class="navbar-brand" href="#">OSFW</a>
+				<a class="btn btn-dark" href="#"><span class="fa fa-power-off"></span></a>
+			</div>
+		</nav>
+		<div class="main">
+			<div class="container">
+				<table class="table table-sm table-hover">
+					<thead>
+						<tr>
+							<th>Source</th>
+							<th>Destination</th>
+							<th>Port</th>
+							<th>Datetime UTC</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="item template">
+							<td class="data source"><code class="text-dark"></code></td>
+							<td class="data destination"><code class="text-dark"></code></td>
+							<td class="data port"><span class="badge badge-secondary"></span></td>
+							<td class="data datetime"><code class="text-dark"></code></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script>
+			$(function () {
+				$.ajax({
+					"method": "GET",
+					"url": "/api/events",
+					"success": function (data) {
+						var json = JSON.parse(data);
+						var template = $(".item.template");
+						
+						template.hide();
+						json.forEach(function (element, index) {
+							var item = template.clone().attr("class", "item");
+							
+							item.show();
+							item.find(".data.source").children().text(element.source);
+							item.find(".data.destination").children().text(element.destination);
+							item.find(".data.port").children().text(element.port);
+							item.find(".data.datetime").children().text(element.datetime);
+							template.parent().append(item);
+						});
+					}
+				});
+			});
+		</script>
+	</body>
 </html>

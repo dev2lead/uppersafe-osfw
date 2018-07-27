@@ -25,6 +25,9 @@ class database:
         self.session = self.session()
         self.chunk = 100
 
+    def __del__(self):
+        self.session.close()
+
     def session_append(self, row):
         try:
             self.session.add(row)

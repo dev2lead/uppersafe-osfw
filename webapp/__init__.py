@@ -9,7 +9,7 @@ from utils import configuration, database
 import flask, hashlib, os
 
 conf = configuration()
-db = database(conf.get("db"))
+db = database
 app = flask.Flask(__name__)
 app.debug = conf.get("verbose")
 app.session_cookie_name = "session"

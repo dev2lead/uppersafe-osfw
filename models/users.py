@@ -11,11 +11,12 @@ from sqlalchemy import Column, Integer, String, DateTime
 
 class users(declarative_base()):
     __tablename__ = "users"
+
     id = Column(Integer, primary_key=True)
     hash = Column(String)
     fullname = Column(String)
     username = Column(String, unique=True)
     password = Column(String)
-    creation = Column(Integer, default=int(time.time()))
-    modification = Column(Integer, onupdate=int(time.time()), default=int(time.time()))
+    creation = Column(Integer, default=0)
+    modification = Column(Integer, default=0)
     flag = Column(Integer, default=0)
