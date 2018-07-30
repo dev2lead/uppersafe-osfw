@@ -8,7 +8,7 @@
 from .. import conf, db, app
 from flask import g, session, request, abort, redirect, make_response, render_template
 from datetime import datetime
-import time, json
+import json
 
 @app.route("/api", methods=["GET"])
 def controller_api_root():
@@ -18,25 +18,56 @@ def controller_api_root():
 def controller_api_auth():
     return make_response(json.dumps({"message": "Not implemented yet"}))
 
-@app.route("/api/events", methods=["GET"])
-def controller_api_events():
+@app.route("/api/events/<string:timeframe>", methods=["GET"])
+def controller_api_events(timeframe):
     data = []
+    utcnow = datetime.utcnow()
     period = {
-        "5m": [int(time.time()) - 300, int(time.time())],
-        "60m": [int(time.time()) - 3600, int(time.time())],
-        "4h": [int(time.time()) - 14400, int(time.time())],
-        "24h": [int(time.time()) - 86400, int(time.time())],
-        "7d": [int(time.time()) - 604800, int(time.time())],
-        "30d": [int(time.time()) - 2592000, int(time.time())]
+        "5m": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, utcnow.minute, 0).timestamp()) - 300,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, utcnow.minute, 0).timestamp()) - 1
+        ],
+        "15m": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, utcnow.minute, 0).timestamp()) - 900,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, utcnow.minute, 0).timestamp()) - 1
+        ],
+        "60m": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, utcnow.minute, 0).timestamp()) - 3600,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, utcnow.minute, 0).timestamp()) - 1
+        ],
+        "4h": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, 0, 0).timestamp()) - 14400,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, 0, 0).timestamp()) - 1
+        ],
+        "12h": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, 0, 0).timestamp()) - 43200,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, 0, 0).timestamp()) - 1
+        ],
+        "24h": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, 0, 0).timestamp()) - 86400,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, utcnow.hour, 0, 0).timestamp()) - 1
+        ],
+        "7d": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, 0, 0, 0).timestamp()) - 604800,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, 0, 0, 0).timestamp()) - 1
+        ],
+        "15d": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, 0, 0, 0).timestamp()) - 1296000,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, 0, 0, 0).timestamp()) - 1
+        ],
+        "30d": [
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, 0, 0, 0).timestamp()) - 2592000,
+            int(datetime(utcnow.year, utcnow.month, utcnow.day, 0, 0, 0).timestamp()) - 1
+        ]
     }
-    if "range" in request.values and request.values.get("range") in period:
-        minimum, maximum = period[request.values.get("range")]
+    if timeframe in period:
+        minimum, maximum = period[timeframe]
         query = g.db.session.query(g.db.models.events)
         query = query.order_by(g.db.models.events.id.desc())
         query = query.filter(g.db.models.events.creation >= minimum)
         query = query.filter(g.db.models.events.creation <= maximum)
-        if "only" in request.values and request.values.get("only"):
-            query = query.filter(g.db.models.events.port.in_(request.values.get("only").split(",")))
+        if "matchonly" in request.values and request.values.get("matchonly"):
+            query = query.filter(g.db.models.events.port.in_(request.values.get("matchonly").split(",")))
         for row in query.yield_per(g.db.chunk):
             data.append({
                 "source": row.source,

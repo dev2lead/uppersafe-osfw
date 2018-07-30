@@ -141,6 +141,7 @@ exemptions:
   - "*?.imageshack.us"
   - "*?.imgur.com"
   - "*?.instagram.com"
+  - "*?.jsfiddle.net"
   - "*?.line.me"
   - "*?.linkedin.com"
   - "*?.live.com"

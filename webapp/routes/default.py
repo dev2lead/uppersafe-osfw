@@ -8,7 +8,7 @@
 from .. import conf, db, app
 from flask import g, session, request, abort, redirect, make_response, render_template
 from datetime import datetime
-import time, json
+import json
 
 @app.before_request
 def handler_before_request():

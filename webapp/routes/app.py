@@ -8,7 +8,7 @@
 from .. import conf, db, app
 from flask import g, session, request, abort, redirect, make_response, render_template
 from datetime import datetime
-import time, json
+import json
 
 @app.route("/app", methods=["GET"])
 def controller_app_root():
@@ -20,4 +20,4 @@ def controller_app_auth():
 
 @app.route("/app/dashboard", methods=["GET", "POST"])
 def controller_app_dashboard():
-    return render_template("default.html")
+    return render_template("dashboard.html")
