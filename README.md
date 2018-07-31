@@ -33,6 +33,8 @@ OSFW includes 3 main components:
 |`osfw-syncfw`|In charge of collecting and syncing the threat intelligence feeds|
 |`osfw-webapp`|In charge of managing the web interface (work in progress)|
 
+![Screenshot](https://i.imgur.com/dqhkXYU.png)
+
 ## Quick start
 
 Install the dependencies with your package manager (for example `apt` on Ubuntu or `yum` on Fedora):
