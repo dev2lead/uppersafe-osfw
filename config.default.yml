@@ -3,8 +3,9 @@
 db: assets/sqlite.db
 
 # Settings related to flask (web interface)
+# It is recommended to setup a reverse proxy with Nginx instead of binding 0.0.0.0 directly
 host: 127.0.0.1
-port: 8000
+port: 5000
 
 # Launch mode of the firewall (standalone|server|client)
 # See README.md to learn more

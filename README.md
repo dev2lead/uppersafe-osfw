@@ -16,6 +16,7 @@ It also provides a secure DNS service that blocks different kind of *malicious s
 - [Quick start](#quick-start)
 - [Configuration](#configuration)
   - [DNS service](#dns-service)
+  - [Remote access](#remote-access)
   - [Launch mode](#launch-mode)
   - [Filter mode](#filter-mode)
   - [Miscellaneous](#miscellaneous)
@@ -66,6 +67,16 @@ It is possible to customize the behaviour of the firewall by copying the default
 To enable the secure DNS service, simply create a symbolic link of the `unbound.conf` file to the unbound configuration directory with the following command:
 
     ln -s "$PWD/assets/unbound.conf" /etc/unbound/unbound.conf.d/osfw.conf
+
+### Remote access
+
+To securely enable remote access to the web interface, your need to install a web server with reverse proxy capabilities and SSL certificates:
+
+    apt install nginx ssl-cert
+
+Then, create a symbolic link of the `nginx.conf` file to the nginx configuration directory with the following command:
+
+    ln -s "$PWD/assets/nginx.conf" /etc/nginx/sites-enabled/osfw.conf
 
 ### Launch mode
 
@@ -124,6 +135,8 @@ There is a way to perform a subdomain wildcard, to do so you need to use a `*?` 
 - unbound
 - systemd
 - screen
+- nginx
+- ssl-cert
 
 ## Support
 
