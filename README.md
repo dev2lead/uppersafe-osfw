@@ -60,7 +60,9 @@ Attach a screen:
 
 ## Configuration
 
-It is possible to customize the behaviour of the firewall by copying the default `config.default.yml` file and editing your own `config.yml` file.
+It is possible to customize the behaviour of the firewall by copying the default `config.default.yml` file and editing your own `config.yml` file:
+
+    cp config.default.yml config.yml && chmod 600 config.yml
 
 ### DNS service
 
@@ -70,13 +72,15 @@ To enable the secure DNS service, simply create a symbolic link of the `unbound.
 
 ### Remote access
 
-To securely enable remote access to the web interface, you need to install a web server with reverse proxy capabilities and the SSL certificates you want (use *Let's Encrypt* instead of those provided by the `ssl-cert` package to avoid SSL warnings):
+To securely enable remote access to the web interface, you need to install a web server with reverse proxy capabilities with your package manager (for example `apt` on Ubuntu or `yum` on Fedora):
 
     apt install nginx ssl-cert
 
 Then, create a symbolic link of the `nginx.conf` file to the nginx configuration directory with the following command:
 
     ln -s "$PWD/assets/nginx.conf" /etc/nginx/sites-enabled/osfw.conf
+
+If you want to use your own SSL certificates instead of those provided by the `ssl-cert` package, don't forget to update the default `nginx.conf` file.
 
 ### Launch mode
 
