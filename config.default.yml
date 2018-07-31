@@ -203,6 +203,7 @@ exemptions:
   - "*?.whatsapp.com"
   - "*?.wix.com"
   - "*?.yahoo.com"
+  - "*?.yimg.com"
   - "*?.ymail.com"
   - "*?.youku.com"
   - "*?.youtu.be"
