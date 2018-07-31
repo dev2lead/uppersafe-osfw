@@ -70,7 +70,7 @@ To enable the secure DNS service, simply create a symbolic link of the `unbound.
 
 ### Remote access
 
-To securely enable remote access to the web interface, your need to install a web server with reverse proxy capabilities and SSL certificates:
+To securely enable remote access to the web interface, you need to install a web server with reverse proxy capabilities and the SSL certificates you want (use *Let's Encrypt* instead of those provided by the `ssl-cert` package to avoid SSL warnings):
 
     apt install nginx ssl-cert
 
