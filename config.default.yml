@@ -2,7 +2,7 @@
 # Path of the sqlite database
 db: assets/sqlite.db
 
-# Settings related to flask (web interface)
+# Settings related to Flask (web interface)
 # It is recommended to setup a reverse proxy with Nginx to instead of binding 0.0.0.0 directly
 # See README.md to learn more about how to setup a remote access
 host: 127.0.0.1
@@ -44,7 +44,7 @@ network:
   ppp: ppp+
   tun: tun+
 
-# Settings related to unbound server
+# Settings related to Unbound server
 unbound:
   verbosity: 1
   hide-version: yes

@@ -1,0 +1,29 @@
+.navbar + div {
+	margin: 56px 0 0 0;
+}
+
+.sidebar {
+	position: fixed;
+	overflow: scroll;
+	height: calc(100vh - 56px);
+	padding: 15px 15px 15px 15px;
+	background: #EEEEEE;
+}
+
+.main {
+	padding: 15px 15px 15px 15px;
+	background: #FFFFFF:
+}
+
+.main .sheet {
+	padding: 15px 15px 15px 15px;
+	background: #EEEEEE;
+}
+
+.main .sheet .chart {
+	width: 100%;
+}
+
+.main .table > tbody .template {
+	display: none;
+}

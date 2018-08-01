@@ -11,48 +11,19 @@
 		<link rel="icon" href="/static/images/favicon.ico"/>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/css/bootstrap.min.css"/>
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"/>
+		<link rel="stylesheet" href="/static/css/style.css"/>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.1/js/bootstrap.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
-		<style type="text/css">
-.main {
-	margin: 56px 0 0 0;
-}
-
-.page {
-	padding: 15px 15px 15px 15px;
-}
-
-.sidebar {
-	position: fixed;
-	overflow: scroll;
-	height: calc(100vh - 56px);
-	padding: 15px 15px 15px 15px;
-	background: #EEEEEE;
-}
-
-.sheet {
-	padding: 20px 20px 20px 20px;
-	background: #EEEEEE;
-}
-
-.chart {
-	width: 100%;
-	height: 0;
-}
-
-.template {
-	display: none;
-}
-		</style>
+		<script src="/static/js/dashboard.js"></script>
 	</head>
 	<body>
 		<nav class="navbar navbar-dark bg-dark fixed-top">
 			<a class="navbar-brand" href="#">OSFW - Dashboard</a>
 			<a class="btn btn-dark" href="#"><span class="fa fa-power-off"></span></a>
 		</nav>
-		<div class="main container-fluid">
+		<div class="container-fluid">
 			<div class="row">
 				<div class="col-2 sidebar">
 					<form>
@@ -79,7 +50,7 @@
 						</div>
 					</form>
 				</div>
-				<div class="col-10 ml-auto page">
+				<div class="col-10 ml-auto main">
 					<div class="jumbotron sheet">
 						<canvas class="chart"></canvas>
 					</div>
@@ -94,183 +65,15 @@
 						</thead>
 						<tbody>
 							<tr class="template">
-								<td class="data datetime"><code class="text-primary"></code></td>
-								<td class="data source"><code class="text-dark"></code></td>
-								<td class="data destination"><code class="text-dark"></code></td>
-								<td class="data port text-right"><span class="badge badge-secondary"></span></td>
+								<td><code class="text-primary data-datetime"></code></td>
+								<td><code class="text-dark data-source"></code></td>
+								<td><code class="text-dark data-destination"></code></td>
+								<td class="text-right"><span class="badge badge-secondary data-port"></span></td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
 		</div>
-		<script>
-			$(function () {
-				var graph = null;
-				var colorhash = function (nbr) {
-					var r, rl, rh = 0;
-					var g, gl, gh = 0;
-					var b, bl, bh = 0;
-					
-					nbr = nbr * 512 % 65336;
-					rh = Math.floor(((nbr >> 8) & 0xFF) / 3 * 16);
-					gh = Math.floor(((nbr >> 8) & 0xFF) / 5 * 32);
-					bh = Math.floor(((nbr >> 8) & 0xFF) / 7 * 64);
-					rh = rh % 256 <= 0 ? 256 : rh % 256;
-					gh = gh % 256 <= 0 ? 256 : gh % 256;
-					bh = bh % 256 <= 0 ? 256 : bh % 256;
-					rl = Math.floor(((nbr) & 0xFF) / 3 * 16);
-					gl = Math.floor(((nbr) & 0xFF) / 5 * 32);
-					bl = Math.floor(((nbr) & 0xFF) / 7 * 64);
-					rl = rl % 256 <= 0 ? 256 : rl % 256;
-					gl = gl % 256 <= 0 ? 256 : gl % 256;
-					bl = bl % 256 <= 0 ? 256 : bl % 256;
-					r = rh * rl % 150 + 50;
-					g = gh * gl % 150 + 50;
-					b = bh * bl % 150 + 50;
-					return ("rgba(" + r + ", " + g + ", " + b + ", 1.00)");
-				}
-				var refresh = function (event) {
-					var that = this;
-					var btntext = $(that).text();
-					var btnicon = $("<i></i>").attr("class", "fa fa-refresh fa-spin");
-					var timeframe = $("[name=timeframe]").val();
-					var matchonly = $("[name=matchonly]").val();
-					
-					$(that).html(btnicon);
-					$.ajax({
-						"url": "/api/events/" + timeframe + "?matchonly=" + matchonly,
-						"method": "GET",
-						"success": function (data) {
-							var json = JSON.parse(data);
-							var datetime = moment.utc();
-							var template = $(".template");
-							var chartctx = $(".chart").attr("width", $(".chart").width()).attr("height", $(".chart").width() / 3).get(0).getContext("2d");
-							var size = parseInt(timeframe);
-							var unit = timeframe.slice(-1);
-							var output = {};
-							
-							while (size != 0) {
-								datetime.subtract(1, {"m": "minutes", "h": "hours", "d": "days"}[unit]);
-								output[datetime.format({"m": "YYYY-MM-DD HH:mm:00", "h": "YYYY-MM-DD HH:00:00", "d": "YYYY-MM-DD 00:00:00"}[unit])] = 0;
-								size = size - 1;
-							}
-							template.parent().find(".item").remove();
-							json.forEach(function (element, index) {
-								var item = template.clone().attr("class", "item");
-								
-								output[moment.utc(element.datetime).format({"m": "YYYY-MM-DD HH:mm:00", "h": "YYYY-MM-DD HH:00:00", "d": "YYYY-MM-DD 00:00:00"}[unit])]++;
-								item.find(".data.datetime").children().text(element.datetime);
-								item.find(".data.source").children().text(element.source);
-								item.find(".data.destination").children().text(element.destination);
-								item.find(".data.port").children().text(element.port).css({"background-color": colorhash(element.port)});
-								template.parent().append(item);
-							});
-							if (graph) {
-								graph.destroy();
-							}
-							graph = new Chart.Line(chartctx, {
-								"data": {
-									"labels": Object.keys(output).reverse().map(function (x) {return (moment.utc(x).format({"m": "HH:mm", "h": "HH:mm", "d": "MM/DD"}[unit]));}),
-									"datasets": [
-										{
-											"label": "Events",
-											"lineTension": 0,
-											"borderWidth": 2,
-											"pointBorderWidth": 2,
-											"pointRadius": 4,
-											"pointHitRadius": 4,
-											"pointBorderWidth": 2,
-											"backgroundColor": "rgba(32, 128, 192, 0.25)",
-											"pointBackgroundColor": "rgba(32, 128, 192, 1.00)",
-											"pointHoverBackgroundColor": "rgba(255, 255, 255, 1.00)",
-											"borderColor": "rgba(32, 128, 192, 1.00)",
-											"pointBorderColor": "rgba(255, 255, 255, 1.00)",
-											"pointHoverBorderColor": "rgba(32, 128, 192, 1.00)",
-											"data": Object.values(output).reverse()
-										}
-									]
-								},
-								"options": {
-									"legend": {
-										"display": false
-									},
-									"layout": {
-										"padding": {
-											"top": 40,
-											"right": 40,
-											"bottom": 0,
-											"left": 0
-										}
-									},
-									"hover": {
-										"mode": "index",
-										"intersect": false,
-										"animationDuration": 0
-									},
-									"tooltips": {
-										"mode": "index",
-										"intersect": false,
-										"caretSize": 8,
-										"xPadding": 8,
-										"yPadding": 8,
-										"bodySpacing": 8,
-										"position": "nearest",
-										"backgroundColor": "#000000"
-									},
-									"scales": {
-										"xAxes": [
-											{
-												"ticks": {
-													"display": true,
-													"fontColor": "#000000",
-													"beginAtZero": false
-												},
-												"gridLines": {
-													"display": true,
-													"color": "#CCCCCC",
-													"zeroLineColor": "#CCCCCC"
-												},
-												"scaleLabel": {
-													"display": true,
-													"fontColor": "#AAAAAA",
-													"labelString": "Timeframe"
-												}
-											}
-										],
-										"yAxes": [
-											{
-												"ticks": {
-													"display": true,
-													"fontColor": "#000000",
-													"beginAtZero": true
-												},
-												"gridLines": {
-													"display": true,
-													"color": "#CCCCCC",
-													"zeroLineColor": "#CCCCCC"
-												},
-												"scaleLabel": {
-													"display": true,
-													"fontColor": "#AAAAAA",
-													"labelString": "Number of events"
-												}
-											}
-										]
-									}
-								}
-							});
-							$(that).text(btntext);
-						},
-						"error": function () {
-							$(that).text(btntext);
-						}
-					});
-					event.preventDefault();
-				}
-				
-				$(".refresh").on("click", refresh).click();
-			});
-		</script>
 	</body>
 </html>

@@ -66,7 +66,7 @@ It is possible to customize the behaviour of the firewall by copying the default
 
 ### DNS service
 
-To enable the secure DNS service, simply create a symbolic link of the `unbound.conf` file to the unbound configuration directory with the following command:
+To enable the secure DNS service, simply create a symbolic link of the `unbound.conf` file to the Unbound configuration directory with the following command:
 
     ln -s "$PWD/assets/unbound.conf" /etc/unbound/unbound.conf.d/osfw.conf
 
@@ -76,7 +76,7 @@ To securely enable remote access to the web interface, you need to install a web
 
     apt install nginx ssl-cert
 
-Then, create a symbolic link of the `nginx.conf` file to the nginx configuration directory with the following command:
+Then, create a symbolic link of the `nginx.conf` file to the Nginx configuration directory with the following command:
 
     ln -s "$PWD/assets/nginx.conf" /etc/nginx/sites-enabled/osfw.conf
 
