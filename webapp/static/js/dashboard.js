@@ -54,12 +54,20 @@ $(function () {
 				json.forEach(function (element, index) {
 					var item = template.clone().attr("class", "item");
 					
-					result[moment.utc(element.datetime).format({"m": "YYYY-MM-DD HH:mm:00", "h": "YYYY-MM-DD HH:00:00", "d": "YYYY-MM-DD 00:00:00"}[unit])]++;
-					item.find(".data-datetime").text(element.datetime);
-					item.find(".data-source").text(element.source);
-					item.find(".data-destination").text(element.destination);
-					item.find(".data-port").text(element.port).css({"background-color": colorhash(element.port)});
+					if (element.flag == 1) {
+						item.find(".data-datetime").text(moment.utc(element.ts * 1000).format("YYYY-MM-DD HH:mm:ss"));
+						item.find(".data-source").text(element.srcaddr).attr("class", "text-danger");
+						item.find(".data-destination").text(element.dstaddr).attr("class", "text-secondary");
+						item.find(".data-port").text(element.dstport).css({"background-color": colorhash(element.dstport)});
+					}
+					if (element.flag == 2) {
+						item.find(".data-datetime").text(moment.utc(element.ts * 1000).format("YYYY-MM-DD HH:mm:ss"));
+						item.find(".data-source").text(element.srcaddr).attr("class", "text-secondary");
+						item.find(".data-destination").text(element.dstaddr).attr("class", "text-danger");
+						item.find(".data-port").text(element.srcport).css({"background-color": colorhash(element.srcport)});
+					}
 					template.parent().append(item);
+					result[moment.utc(element.ts * 1000).format({"m": "YYYY-MM-DD HH:mm:00", "h": "YYYY-MM-DD HH:00:00", "d": "YYYY-MM-DD 00:00:00"}[unit])]++;
 				});
 				if (chartobj) {
 					chartobj.destroy();

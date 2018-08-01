@@ -6,7 +6,7 @@
 # -*- coding: utf-8 -*-
 
 from daemon import conf, log, db, ipfw, dnfw
-import time, importlib, re, json, socket, pebble
+import time, re, importlib, json, socket, pebble
 
 def ipbydn(data):
     result = set()
@@ -103,9 +103,9 @@ class syncfw:
     def clean(self):
         for element in conf.get("exemptions"):
             if re.search("[.][a-z]+$", element):
-                db.session_append(db.models.exemptions(domain=element.lower(), creation=int(time.time())))
+                db.session_append(db.models.exemptions(ts=int(time.time()), domain=element.lower()))
             else:
-                db.session_append(db.models.exemptions(ipaddr=element.lower(), creation=int(time.time())))
+                db.session_append(db.models.exemptions(ts=int(time.time()), ipaddr=element.lower()))
         try:
             db.models.exemptions().metadata.drop_all(db.engine)
             db.models.exemptions().metadata.create_all(db.engine)
@@ -174,11 +174,11 @@ class syncfw:
                 for record in revlookup:
                     self.check_append(record, ipfw.ipbl, ipfw.dnbl)
                 self.check_append(element, ipfw.dnbl, ipfw.drop)
-                db.session_append(db.models.threats(domain=element, jsondata=json.dumps(revlookup), creation=int(time.time())))
+                db.session_append(db.models.threats(ts=int(time.time()), domain=element, jsondata=json.dumps(revlookup)))
                 self.threats.pop(element)
             else:
                 self.check_append(element, ipfw.ipbl, ipfw.drop)
-                db.session_append(db.models.threats(ipaddr=element, jsondata=json.dumps(revlookup), creation=int(time.time())))
+                db.session_append(db.models.threats(ts=int(time.time()), ipaddr=element, jsondata=json.dumps(revlookup)))
                 self.threats.pop(element)
         try:
             self.check_commit()

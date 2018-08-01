@@ -13,9 +13,9 @@ class events(declarative_base()):
     __tablename__ = "events"
 
     id = Column(Integer, primary_key=True)
-    source = Column(String)
-    destination = Column(String)
-    port = Column(Integer)
-    creation = Column(Integer, default=0)
-    modification = Column(Integer, default=0)
+    ts = Column(Integer, default=0)
+    srcaddr = Column(String)
+    dstaddr = Column(String)
+    srcport = Column(Integer)
+    dstport = Column(Integer)
     flag = Column(Integer, default=0)

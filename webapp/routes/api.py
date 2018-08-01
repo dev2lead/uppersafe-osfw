@@ -64,14 +64,17 @@ def controller_api_events(timeframe):
         minimum, maximum = period[timeframe]
         query = g.db.session.query(g.db.models.events)
         query = query.order_by(g.db.models.events.id.desc())
-        query = query.filter(g.db.models.events.creation >= minimum)
-        query = query.filter(g.db.models.events.creation <= maximum)
+        query = query.filter(g.db.models.events.ts >= minimum)
+        query = query.filter(g.db.models.events.ts <= maximum)
         if "matchonly" in request.values and request.values.get("matchonly"):
-            query = query.filter(g.db.models.events.port.in_(request.values.get("matchonly").split(",")))
+            query = query.filter(g.db.models.events.srcport.in_(request.values.get("matchonly").split(",")) | g.db.models.events.dstport.in_(request.values.get("matchonly").split(",")))
         for row in query.yield_per(g.db.chunk):
             data.append({
-                "source": row.source,
-                "destination": row.destination,
-                "port": row.port,
-                "datetime": datetime.utcfromtimestamp(row.creation).strftime("%Y-%m-%d %H:%M:%S")})
+                "id": row.id,
+                "ts": row.ts,
+                "srcaddr": row.srcaddr,
+                "dstaddr": row.dstaddr,
+                "srcport": row.srcport,
+                "dstport": row.dstport,
+                "flag": row.flag})
     return make_response(json.dumps(data))

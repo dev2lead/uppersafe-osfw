@@ -6,7 +6,7 @@
 # -*- coding: utf-8 -*-
 
 from daemon import conf, log, db
-import time, os, re
+import time, re, os, subprocess
 
 class sensor:
     def __init__(self):
@@ -14,10 +14,19 @@ class sensor:
         self.idx = 0
         self.start()
 
-    def parse(self, buffer):
-        for source, destination, port in re.findall(".* SRC=([0-9a-f:.]+) DST=([0-9a-f:.]+) .* DPT=([0-9]+) .*", buffer, re.IGNORECASE):
-            log.info(str("Blocking '{}' -> '{}:{}'").format(source, destination, port))
-            db.session_append(db.models.events(source=source, destination=destination, port=port, creation=int(time.time())))
+    def parse(self, content):
+        try:
+            iplist = subprocess.check_output(["hostname", "--all-ip"], stderr=subprocess.STDOUT).decode().strip().split(" ")
+        except Exception as error:
+            log.error(error)
+            iplist = []
+        for srcaddr, dstaddr, srcport, dstport in re.findall(".* SRC=([0-9a-f:.]+) DST=([0-9a-f:.]+) .* SPT=([0-9]+) DPT=([0-9]+) .*", content, re.IGNORECASE):
+            if dstaddr in iplist:
+                log.info(str("Blocking incoming '{}:{}' -> '{}:{}'").format(srcaddr, srcport, dstaddr, dstport))
+                db.session_append(db.models.events(ts=int(time.time()), srcaddr=srcaddr, dstaddr=dstaddr, srcport=srcport, dstport=dstport, flag=1))
+            if srcaddr in iplist:
+                log.info(str("Blocking outgoing '{}:{}' -> '{}:{}'").format(srcaddr, srcport, dstaddr, dstport))
+                db.session_append(db.models.events(ts=int(time.time()), srcaddr=srcaddr, dstaddr=dstaddr, srcport=srcport, dstport=dstport, flag=2))
         try:
             db.session_commit()
         except Exception as error:

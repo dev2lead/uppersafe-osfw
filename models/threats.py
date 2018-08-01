@@ -13,9 +13,8 @@ class threats(declarative_base()):
     __tablename__ = "threats"
 
     id = Column(Integer, primary_key=True)
+    ts = Column(Integer, default=0)
     domain = Column(String, unique=True)
     ipaddr = Column(String, unique=True)
     jsondata = Column(String)
-    creation = Column(Integer, default=0)
-    modification = Column(Integer, default=0)
     flag = Column(Integer, default=0)
