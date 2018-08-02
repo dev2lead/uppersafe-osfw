@@ -34,7 +34,7 @@ OSFW includes 3 main components:
 |`osfw-syncfw`|In charge of collecting and syncing the threat intelligence feeds|
 |`osfw-webapp`|In charge of managing the web interface (work in progress)|
 
-![Screenshot](https://i.imgur.com/dqhkXYU.png)
+![Screenshot](https://i.imgur.com/ZIz7eIP.png)
 
 ## Quick start
 

@@ -5,27 +5,17 @@ $(function () {
 	var button = $(".refresh");
 	
 	function colorhash(nbr) {
-		var r, rhi, rlo = 0;
-		var g, ghi, glo = 0;
-		var b, bhi, blo = 0;
+		var r = 0;
+		var g = 0;
+		var b = 0;
 		
-		nbr = nbr * 512 % 65336;
-		rhi = Math.round(((nbr >> 8) & 0xFF) / 3 * 16);
-		ghi = Math.round(((nbr >> 8) & 0xFF) / 5 * 32);
-		bhi = Math.round(((nbr >> 8) & 0xFF) / 7 * 64);
-		rhi = rhi % 256 <= 0 ? 256 : rhi % 256;
-		ghi = ghi % 256 <= 0 ? 256 : ghi % 256;
-		bhi = bhi % 256 <= 0 ? 256 : bhi % 256;
-		rlo = Math.round(((nbr) & 0xFF) / 3 * 16);
-		glo = Math.round(((nbr) & 0xFF) / 5 * 32);
-		blo = Math.round(((nbr) & 0xFF) / 7 * 64);
-		rlo = rlo % 256 <= 0 ? 256 : rlo % 256;
-		glo = glo % 256 <= 0 ? 256 : glo % 256;
-		blo = blo % 256 <= 0 ? 256 : blo % 256;
-		r = rhi * rlo % 150 + 50;
-		g = ghi * glo % 150 + 50;
-		b = bhi * blo % 150 + 50;
-		return ("rgba(" + r + ", " + g + ", " + b + ", 1.00)");
+		r = Math.round(Math.pow(nbr, 4) / 3) % 200;
+		g = Math.round(Math.pow(nbr, 4) / 5) % 200;
+		b = Math.round(Math.pow(nbr, 4) / 7) % 200;
+		r = "00" + r.toString(16).toUpperCase();
+		g = "00" + g.toString(16).toUpperCase();
+		b = "00" + b.toString(16).toUpperCase();
+		return ("#" + r.slice(-2) + g.slice(-2) + b.slice(-2));
 	}
 	
 	function refresh(event) {
