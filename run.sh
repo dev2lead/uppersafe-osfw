@@ -15,8 +15,8 @@ export LC_ALL="C.UTF-8"
 export LANG="C.UTF-8"
 
 if [ -z "$1" ]; then
-    RESULT=`supervisorctl pid osfw-sensor`
-    if [ "$RESULT" == 0 ]; then
+    RESULT=`supervisorctl pid osfw-sensor 2> /dev/null`
+    if [ "$RESULT" == 0 ] || [ -z "$RESULT" ]; then
 	RESULT=`find /var/run/screen -name "*.osfw-sensor" | wc -l | xargs`
 	if [ "$RESULT" == 0 ]; then
 	    screen -dmS osfw-sensor python osfw.py daemon/sensor
@@ -26,8 +26,8 @@ if [ -z "$1" ]; then
     else
 	echo "Error: osfw-sensor is already running from supervisor"
     fi
-    RESULT=`supervisorctl pid osfw-syncfw`
-    if [ "$RESULT" == 0 ]; then
+    RESULT=`supervisorctl pid osfw-syncfw 2> /dev/null`
+    if [ "$RESULT" == 0 ] || [ -z "$RESULT" ]; then
 	RESULT=`find /var/run/screen -name "*.osfw-syncfw" | wc -l | xargs`
 	if [ "$RESULT" == 0 ]; then
 	    screen -dmS osfw-syncfw python osfw.py daemon/syncfw
@@ -37,8 +37,8 @@ if [ -z "$1" ]; then
     else
 	echo "Error: osfw-syncfw is already running from supervisor"
     fi
-    RESULT=`supervisorctl pid osfw-webapp`
-    if [ "$RESULT" == 0 ]; then
+    RESULT=`supervisorctl pid osfw-webapp 2> /dev/null`
+    if [ "$RESULT" == 0 ] || [ -z "$RESULT" ]; then
 	RESULT=`find /var/run/screen -name "*.osfw-webapp" | wc -l | xargs`
 	if [ "$RESULT" == 0 ]; then
 	    screen -dmS osfw-webapp python osfw.py webapp
