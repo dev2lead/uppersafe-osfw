@@ -40,7 +40,7 @@ OSFW includes 3 main components:
 
 Install the dependencies with your package manager (for example `apt` on Ubuntu or `yum` on Fedora):
 
-    apt install python3 virtualenv iptables unbound systemd screen
+    apt install python3 virtualenv iptables unbound systemd supervisor screen
 
 Install the virtual environment:
 
@@ -138,6 +138,7 @@ There is a way to perform a subdomain wildcard, to do so you need to use a `*?` 
 - iptables
 - unbound
 - systemd
+- supervisor
 - screen
 - nginx
 - ssl-cert
