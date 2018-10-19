@@ -58,6 +58,10 @@ Attach a screen:
     screen -r osfw-syncfw
     screen -r osfw-webapp
 
+Automatically launch the firewall at startup (`supervisorctl` will be used instead of `screen`):
+
+    ln -s "$PWD/assets/supervisord.conf" /etc/supervisor/conf.d/osfw.conf
+
 ## Configuration
 
 It is possible to customize the behaviour of the firewall by copying the default `config.default.yml` file and editing your own `config.yml` file:
