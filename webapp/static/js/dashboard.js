@@ -91,7 +91,7 @@ $(function () {
 						"layout": {
 							"padding": {
 								"top": 40,
-								"righit": 40,
+								"right": 40,
 								"bottom": 0,
 								"left": 0
 							}

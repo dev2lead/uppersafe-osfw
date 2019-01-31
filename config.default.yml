@@ -144,6 +144,7 @@ exemptions:
   - "*?.imgbox.com"
   - "*?.imgur.com"
   - "*?.instagram.com"
+  - "*?.jsdelivr.com"
   - "*?.jsfiddle.net"
   - "*?.line.me"
   - "*?.linkedin.com"
