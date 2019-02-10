@@ -1,4 +1,4 @@
-![UPPERSAFE](https://web.uppersafe.com/resources/images/uppersafe-color.svg)
+![UPPERSAFE](https://i.imgur.com/B5YwFdE.png)
 
 # *UPPERSAFE Open Source Firewall*
 
