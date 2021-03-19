@@ -1,5 +1,5 @@
 Flask==1.0.2
-Jinja2==2.10
+Jinja2==2.11.3
 MarkupSafe==1.0
 Pebble==4.3.9
 PyYAML==3.12
